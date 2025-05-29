@@ -17,7 +17,7 @@ def recognize_faces(
     end: float,
     embed_faces_json: str,
     threshold: float = 0.35,
-    frame_interval: int = 10,
+    frame_interval: int = 60,
 ) -> List[Dict[str, Any]]:
     """
     Recognizes faces in a video by comparing to labeled embeddings.
@@ -73,7 +73,7 @@ def recognize_faces(
             break
         timestamp = frame_idx / fps
 
-        # SKip frames before segment start
+        # Skip frames before segment start
         if timestamp < start:
             frame_idx += 1
             continue

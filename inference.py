@@ -5,6 +5,8 @@ import uuid
 
 from dotenv import load_dotenv, find_dotenv
 from tqdm import tqdm
+import whisper
+import torch
 
 from tools.diarization import diarize
 from tools.download_video import VideoManager
@@ -27,6 +29,9 @@ def main(
     video_manager = VideoManager(use_file_buffer=False)
     writer = SRTCaptionWriter()
     speaker_id_to_name = {}
+    # Load Whisper model
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model = whisper.load_model("base", device=device)
 
     with tempfile.TemporaryDirectory() as temp_dir:
         video_path = os.path.join(temp_dir, f"video_{uuid.uuid4()}.mp4")
@@ -40,7 +45,10 @@ def main(
         extract_audio(video_path, audio_path)
 
         # Diarize
-        diarization_result = diarize(audio_path)
+        # diarization_result = diarize(audio_path)
+        diarization_result = {
+            "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}
+        }
         logger.info("Completed diarization.")
         logger.debug(f"Diarization result: {diarization_result}")
 
@@ -77,7 +85,15 @@ def main(
                 speaker_name = speaker_id_to_name[speaker_id]
 
             # Transcribe each audio segment
-            transcription = transcribe_audio(audio_path, start, end)
+            logger.info("Beginning transcription...")
+            transcription = transcribe_audio(
+                audio_path,
+                start,
+                end,
+                model,
+                "whisper.cpp/build/bin/whisper-cli",
+                "whisper.cpp/models/ggml-base.en.bin",
+            )
             logger.info(f"Speaker name: {speaker_name}, Transcription: {transcription}")
             # Add the caption to the writer
             writer.add_caption(
@@ -93,7 +109,7 @@ def main(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
 
     load_dotenv(find_dotenv(), override=True)
