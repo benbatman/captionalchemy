@@ -45,7 +45,7 @@ def main(
         logger.debug(f"Diarization result: {diarization_result}")
 
         # Run whisper on each individual speaker segment
-        for speaker_id, segment in tqdm(diarization_result.items()):
+        for speaker_id, segment in diarization_result.items():
             start = segment["start"]
             end = segment["end"]
             logger.debug(
@@ -54,7 +54,7 @@ def main(
 
             # Does speaker already have a name?
             speaker_identified = speaker_id in speaker_id_to_name
-            if speaker_identified and character_identification:
+            if not speaker_identified and character_identification:
                 logger.debug(
                     f"Character identification enabled for speaker {speaker_id}."
                 )
