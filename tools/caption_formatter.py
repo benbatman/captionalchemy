@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 
 class SRTCaptionWriter:
@@ -11,7 +11,15 @@ class SRTCaptionWriter:
     def __init__(self) -> None:
         self._captions: List[Dict] = []
 
-    def add_caption(self, start: float, end: float, speaker: str, text: str) -> None:
+    def add_caption(
+        self,
+        start: float,
+        end: float,
+        speaker: Optional[str] = None,
+        text: Optional[str] = None,
+        event_type: Optional[str] = None,
+        label: Optional[str] = None,
+    ) -> None:
         """
         Add one caption entry.
 
@@ -20,13 +28,33 @@ class SRTCaptionWriter:
             end (float): Segment end time in seconds.
             speaker (str): Speaker name or ID.
             text (str): Transcribed text.
+            event_type (str, optional): Type of event (speech, music, silence, etc.).
+            label (str, optional): Original label from audio detection.
         """
+        # Determine the caption text based on event type
+        if text:
+            caption_text = text.strip().replace("\n", " ")
+        elif event_type == "music":
+            caption_text = "[MUSIC PLAYING]"
+        elif event_type == "silence":
+            # Only add silence captions for longer silences
+            if end - start >= self.min_silence_duration:
+                caption_text = "[SILENCE]"
+            else:
+                return  # Skip short silences
+        elif label:
+            # For other sound events, use the detected label
+            caption_text = f"[{label.upper()}]"
+        else:
+            caption_text = "[AUDIO]"  # Fallback
+
         self._captions.append(
             {
                 "start": start,
                 "end": end,
                 "speaker": speaker,
-                "text": text.strip().replace("\n", " "),
+                "text": caption_text,
+                "event_type": event_type,
             }
         )
 
@@ -51,7 +79,12 @@ class SRTCaptionWriter:
                 # write index, timing line, then speaker: text
                 f.write(f"{idx}\n")
                 f.write(f"{start_ts} --> {end_ts}\n")
-                f.write(f"{cap['speaker']}: {cap['text']}\n\n")
+                # For speech events, include speaker name
+                if cap["speaker"] and cap["event_type"] == "speech":
+                    f.write(f"{cap['speaker']}: {cap['text']}\n\n")
+                else:
+                    # For music and other events, just show the description
+                    f.write(f"{cap['text']}\n\n")
 
     @staticmethod
     def _format_timestamp(seconds: float) -> str:

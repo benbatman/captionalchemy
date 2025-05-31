@@ -21,6 +21,7 @@ class AudioEvent:
     end: float
     event_type: EventType
     speaker_id: Optional[str] = None
+    speaker_name: Optional[str] = None
     confidence: Optional[float] = None
     label: Optional[str] = None
     duration: Optional[float] = None

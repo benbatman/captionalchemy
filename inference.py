@@ -54,14 +54,13 @@ def main(
         )
         logger.info(f"Speech segments detected: {speech_segments}")
 
+        logger.info("Detecting non-speech segments...")
         non_speech_events = detect_non_speech_segments(audio_path, device=device)
         print(non_speech_events)
 
         if not speech_segments:
             logger.warning("No speech segments detected. Exiting.")
             return
-
-        exit(1)
 
         # Diarize
         # diarization_result = diarize(audio_path)  looks like this: { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., SPEAKER_XX: {} }
@@ -80,10 +79,17 @@ def main(
             total_audio_duration=None,
         )
 
-        # Run whisper on each individual speaker segment
-        for speaker_id, segment in diarization_result.items():
-            start = segment["start"]
-            end = segment["end"]
+        print("Integrated audio events:\n")
+        print(integrated_audio_events)
+
+        # Run whisper and character identification on each individual speaker segment
+        for audio_event in tqdm(
+            integrated_audio_events, desc="Processing audio events"
+        ):
+            # If the event is not speech
+            start = audio_event.start
+            end = audio_event.end
+            speaker_id = audio_event.speaker_id
             logger.debug(
                 f"Processing speaker {speaker_id} from {start} to {end} seconds..."
             )
@@ -111,6 +117,9 @@ def main(
                 speaker_id_to_name[speaker_id] = speaker_name
             else:
                 speaker_name = speaker_id_to_name[speaker_id]
+
+            # Add speaker name to the audio event
+            audio_event.speaker_name = speaker_name
 
             # Transcribe each audio segment
             logger.info("Beginning transcription...")
