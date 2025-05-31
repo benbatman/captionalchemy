@@ -8,13 +8,15 @@ from tqdm import tqdm
 import whisper
 import torch
 
-from tools.diarization import diarize
+from tools.audio_analysis.diarization import diarize
 from tools.download_video import VideoManager
 from tools.recognize_faces import recognize_faces
 from tools.extract_audio import extract_audio
 from tools.transcription import transcribe_audio
 from tools.embed_known_faces import embed_faces
 from tools.caption_formatter import SRTCaptionWriter
+from tools.audio_analysis.vad import get_speech_segments
+from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
 
 
 def main(
@@ -44,8 +46,26 @@ def main(
         logger.info(f"Extracting audio from {video_path} to {audio_path}")
         extract_audio(video_path, audio_path)
 
+        # Speech Activity Detection (VAD)
+        logger.info("Running Voice Activity Detection (VAD)...")
+        speech_segments = get_speech_segments(
+            audio_path, os.getenv("HF_AUTH_TOKEN", ""), device
+        )
+        logger.info(f"Speech segments detected: {speech_segments}")
+
+        non_speech_events = detect_non_speech_segments(audio_path, device=device)
+        print(non_speech_events)
+
+        if not speech_segments:
+            logger.warning("No speech segments detected. Exiting.")
+            return
+
+        exit(1)
+
+        # Combine speech segments with non-speech detection
+
         # Diarize
-        # diarization_result = diarize(audio_path)
+        # diarization_result = diarize(audio_path)  looks like this: { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., SPEAKER_XX: {} }
         diarization_result = {
             "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}
         }
@@ -109,7 +129,7 @@ def main(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
     load_dotenv(find_dotenv(), override=True)
