@@ -17,6 +17,7 @@ from tools.embed_known_faces import embed_faces
 from tools.caption_formatter import SRTCaptionWriter
 from tools.audio_analysis.vad import get_speech_segments
 from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
+from tools.audio_analysis.audio_segment_integration import integrate_audio_segments
 
 
 def main(
@@ -62,8 +63,6 @@ def main(
 
         exit(1)
 
-        # Combine speech segments with non-speech detection
-
         # Diarize
         # diarization_result = diarize(audio_path)  looks like this: { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., SPEAKER_XX: {} }
         diarization_result = {
@@ -71,6 +70,15 @@ def main(
         }
         logger.info("Completed diarization.")
         logger.debug(f"Diarization result: {diarization_result}")
+
+        # Integrate audio segments
+        logger.info("Integrating audio segments...")
+        integrated_audio_events = integrate_audio_segments(
+            speech_segments,
+            non_speech_events,
+            diarization_result,
+            total_audio_duration=None,
+        )
 
         # Run whisper on each individual speaker segment
         for speaker_id, segment in diarization_result.items():
