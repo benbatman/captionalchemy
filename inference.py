@@ -12,16 +12,19 @@ from tools.audio_analysis.diarization import diarize
 from tools.download_video import VideoManager
 from tools.recognize_faces import recognize_faces
 from tools.extract_audio import extract_audio
-from tools.transcription import transcribe_audio
+from tools.captioning.transcriber import Transcriber
+from tools.captioning.timing_analyzer import TimingAnalyzer
 from tools.embed_known_faces import embed_faces
-from tools.caption_formatter import SRTCaptionWriter
+from tools.captioning.caption_formatter import SRTCaptionWriter
 from tools.audio_analysis.vad import get_speech_segments
 from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
-from tools.audio_analysis.audio_segment_integration import integrate_audio_segments
+from tools.audio_analysis.audio_segment_integration import (
+    integrate_audio_segments,
+)
 
 
 def main(
-    video_url: str,
+    video_url_or_path: str,
     character_identification: bool = True,
     known_faces_json: str = "known_faces.json",
     embed_faces_json: str = "embed_faces.json",
@@ -31,6 +34,9 @@ def main(
     embed_faces(known_faces_json, embed_faces_json)
     video_manager = VideoManager(use_file_buffer=False)
     writer = SRTCaptionWriter()
+    transcriber = Transcriber()
+    timing_analyzer = TimingAnalyzer()
+
     speaker_id_to_name = {}
     # Load Whisper model
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -39,9 +45,12 @@ def main(
     with tempfile.TemporaryDirectory() as temp_dir:
         video_path = os.path.join(temp_dir, f"video_{uuid.uuid4()}.mp4")
         audio_path = os.path.join(temp_dir, f"audio_{uuid.uuid4()}.wav")
-        # Get the video
-        video_manager.get_video_data(video_url, video_path)
-        logger.info(f"Video downloaded to {video_path}")
+        if os.path.exists(video_url_or_path):
+            video_path = video_url_or_path
+        else:
+            # Get the video
+            video_manager.get_video_data(video_url_or_path, video_path)
+            logger.info(f"Video downloaded to {video_path}")
 
         # Extract the audio
         logger.info(f"Extracting audio from {video_path} to {audio_path}")
@@ -86,9 +95,12 @@ def main(
         for audio_event in tqdm(
             integrated_audio_events, desc="Processing audio events"
         ):
-            # If the event is not speech
+            event_type = audio_event.event_type.value
             start = audio_event.start
             end = audio_event.end
+            if event_type != "speech":
+                writer.add_caption(start, end, event_type=event_type)
+                continue
             speaker_id = audio_event.speaker_id
             logger.debug(
                 f"Processing speaker {speaker_id} from {start} to {end} seconds..."
@@ -121,24 +133,31 @@ def main(
             # Add speaker name to the audio event
             audio_event.speaker_name = speaker_name
 
-            # Transcribe each audio segment
-            logger.info("Beginning transcription...")
-            transcription = transcribe_audio(
-                audio_path,
-                start,
-                end,
-                model,
-                "whisper.cpp/build/bin/whisper-cli",
-                "whisper.cpp/models/ggml-base.en.bin",
-            )
-            logger.info(f"Speaker name: {speaker_name}, Transcription: {transcription}")
-            # Add the caption to the writer
-            writer.add_caption(
+            word_timings = transcriber.transcribe_audio(
+                audio_file=audio_path,
                 start=start,
                 end=end,
-                speaker=speaker_name,
-                text=transcription,
+                model=model,
+                whisper_build_path="whisper.cpp/build/bin/whisper-cli",
+                whisper_model_path="whisper.cpp/models/ggml-base.en.bin",
+                device=device,
             )
+
+            subtitle_segments = timing_analyzer.suggest_subtitle_segments(word_timings)
+
+            # Loop through each subtitle segment and add it to the writer
+            for segment in subtitle_segments:
+                transcription = segment.text
+                start = segment.start
+                end = segment.end
+
+                # Add the caption to the writer
+                writer.add_caption(
+                    start=start,
+                    end=end,
+                    speaker=speaker_name,
+                    text=transcription,
+                )
 
         # Write the captions to an SRT file
         writer.write("output_captions.srt")
@@ -151,7 +170,8 @@ if __name__ == "__main__":
 
     load_dotenv(find_dotenv(), override=True)
 
-    video_url = "https://ga.video.cdn.pbs.org/videos/pbs-space-time/f6d229fe-d0dd-4207-8032-691aeab2a467/2000057365/hd-16x9-mezzanine-1080p/mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
+    # video_url = "https://ga.video.cdn.pbs.org/videos/pbs-space-time/f6d229fe-d0dd-4207-8032-691aeab2a467/2000057365/hd-16x9-mezzanine-1080p/mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
+    video_url = "mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
     logger.info("Starting inference pipeline...")
     main(
         video_url,

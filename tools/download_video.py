@@ -116,6 +116,7 @@ class VideoManager:
           - Else if .mp4 (or other), either download to `output_video_path` or buffer in RAM.
         """
         url = video_url.lower()
+
         if url.endswith(".m3u8"):
             return self._read_hls_stream_to_buffer(
                 m3u8_url=video_url, output_path=output_video_path
