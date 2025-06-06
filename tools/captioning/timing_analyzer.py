@@ -134,7 +134,7 @@ class TimingAnalyzer:
         self.contraction_suffix_pattern = re.compile(
             r"""^(?:[’'](?:s|m|re|ve|ll|d|t)$)""", re.IGNORECASE | re.VERBOSE
         )
-        self.lexicon = self._load_lexicon()
+        # self.lexicon = self._load_lexicon()
 
     def _load_lexicon(self) -> Dict[str, bool]:
         """
