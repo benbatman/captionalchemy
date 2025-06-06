@@ -10,12 +10,13 @@ class SRTCaptionWriter:
 
     def __init__(
         self,
-        min_silence_duration: float = 0.5,
-        min_music_duration: float = 1.0,
+        min_silence_duration: float = 1.0,
+        min_music_duration: float = 1.5,
     ) -> None:
         self._captions: List[Dict] = []
         self.min_silence_duration = min_silence_duration
         self.min_music_duration = min_music_duration
+        self.last_speaker: Optional[str] = None
 
     def add_caption(
         self,
@@ -90,7 +91,12 @@ class SRTCaptionWriter:
                 f.write(f"{start_ts} --> {end_ts}\n")
                 # For speech events, include speaker name
                 if cap["speaker"] and cap["event_type"] == "speech":
-                    f.write(f"{cap['speaker']}: {cap['text']}\n\n")
+                    if self.last_speaker != cap["speaker"]:
+                        self.last_speaker = cap["speaker"]
+                        f.write(f"{cap['speaker']}: {cap['text']}\n\n")
+                    else:
+                        # If the speaker hasn't changed, just write the text
+                        f.write(f"{cap['text']}\n\n")
                 else:
                     # For music and other events, just show the description
                     f.write(f"{cap['text']}\n\n")

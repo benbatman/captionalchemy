@@ -210,56 +210,50 @@ class TimingAnalyzer:
         n = len(word_timings)
 
         while i < n:
+            prefix = word_timings[i].word
+            is_subword = word_timings[i].is_subword
+            next_is_subword = word_timings[i + 1].is_subword if i + 1 < n else False
+            start_time = word_timings[i].start
+            end_time = word_timings[i].end
 
-            # Always try to match the largest possible sequence (up to 4 tokens)
-            max_fragments = 5
-            best_merge_idx = i
-            best_merge_word = None
-
-            # Build progressively longer candidates, tokens[i:j+1]
-            prefix = ""
-            for j in range(i, min(i + max_fragments, n)):
-                token = word_timings[j].word.strip()
-                if token == "":
-                    i += 1
-                    continue  # Skip empty tokens
-                # Heuristic: skip if prefix starts or ends with punctuation
-                # All punctation are outputted as separate tokens from Whisper
-                if any(p in token for p in self.all_punctuation):
-                    break
-
-                prefix += token
-                prefix_lower = prefix.lower()
-
-                # Lexicon check
-                if (
-                    prefix_lower in self.lexicon
-                    or prefix_lower in self.custom_dictionary
-                ):
-                    best_merge_idx = j
-                    best_merge_word = prefix
-
-            # Continue looking up to max_fragments tokens
-            if (
-                best_merge_word is not None
-                and best_merge_idx is not None
-                and best_merge_idx > i
-            ):
-                # We found at least one multi-token merge; use the longest (largest j).
-                merged_timing = WordTiming(
-                    word=best_merge_word,
-                    start=word_timings[i].start,
-                    end=word_timings[best_merge_idx].end,
-                )
-                merged.append(merged_timing)
-                logger.debug(
-                    f"Merged word: {best_merge_word!r} from tokens {i}..{best_merge_idx}"
-                )
-                i = best_merge_idx + 1
-            else:
-                # No valid multi-token merge; emit the single token as-is.
+            # If the current token is not a subword (is_subword=False),
+            # we can’t merge it with anything before i. Move on.
+            if not is_subword and not next_is_subword:
                 merged.append(word_timings[i])
                 i += 1
+                continue
+
+            # Otherwise, try to merge as long as the next tokens are also is_subword=True.
+            j = i + 1
+            while j < n and word_timings[j].is_subword:
+                token_j = word_timings[j].word
+
+                if any(p in token_j for p in self.all_punctuation):
+                    break
+
+                # Lexicon check (only merge if prefix+token_j exists),
+                # you can do something like:
+                candidate = prefix + token_j
+                # if (
+                #     candidate.lower() not in self.lexicon
+                #     and candidate.lower() not in self.custom_dictionary
+                # ):
+                #     break
+
+                # If passed all tests, absorb this fragment into prefix:
+                prefix = candidate
+                end_time = word_timings[j].end
+                j += 1
+
+            # Build a single WordTiming from [i .. j-1]
+            merged_word_timing = WordTiming(
+                word=prefix,
+                start=start_time,
+                end=end_time,
+                is_subword=False,  # After merging, it becomes a “full word.”
+            )
+            merged.append(merged_word_timing)
+            i = j
 
         return merged
 

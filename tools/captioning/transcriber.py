@@ -133,7 +133,8 @@ class Transcriber:
         n_leading_spaces = len(raw_token) - len(raw_token.lstrip(" "))
         # Whisper outputs 3 space if whole word, 2 spaces if subword
         is_subword = raw_token not in self.punctuation_set and n_leading_spaces == 2
-
+        if is_subword:
+            print("Subword detected:", raw_token)
         token = raw_token.strip()
 
         return WordTiming(
@@ -223,7 +224,7 @@ class Transcriber:
             os.unlink(tmp_path)
 
             transcription = result.stdout
-            print(f"Transcription result: {transcription}")
+            logger.debug(f"Whisper.cpp output: {transcription}")
 
             word_timings = []
             for line in transcription.splitlines():
@@ -244,6 +245,8 @@ class Transcriber:
 
         # Use Whisper Python API for Linux and Windows, ideally have cuda
         else:
+            # Whisper python API outputs punctuation as part of the word
+            # Nor does it output word fragments
             word_timings = []
             logger.info("Using Whisper Python API for transcription")
             if isinstance(model, str):
@@ -277,7 +280,12 @@ class Transcriber:
                     adjusted_start = start + start_w
                     adjusted_end = start + end_w
                     word_timings.append(
-                        WordTiming(word=text, start=adjusted_start, end=adjusted_end)
+                        WordTiming(
+                            word=text,
+                            start=adjusted_start,
+                            end=adjusted_end,
+                            is_subword=False,
+                        )
                     )
 
             logger.debug(

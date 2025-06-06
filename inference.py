@@ -157,6 +157,7 @@ def main(
                     end=end,
                     speaker=speaker_name,
                     text=transcription,
+                    event_type="speech",
                 )
 
         # Write the captions to an SRT file
