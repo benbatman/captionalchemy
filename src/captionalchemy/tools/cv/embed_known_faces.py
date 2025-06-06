@@ -19,7 +19,9 @@ def embed_faces(
         },
         ...
     ]
-    This function reads the JSON file, loads the images, and extracts face embeddings using the InsightFace model.
+    This function reads the JSON file,
+        loads the images,
+        and extracts face embeddings using the InsightFace model.
 
     Args:
         known_faces_json (str): Path to the JSON file containing known faces.
@@ -27,6 +29,7 @@ def embed_faces(
     Returns:
         dict: A dictionary with names as keys and their corresponding face embeddings as values.
     """
+    logger = logging.getLogger(__name__)
     with open(known_faces_json, "r") as f:
         known_list = json.load(f)
 
@@ -47,8 +50,6 @@ def embed_faces(
         allowed_modules=["detection", "recognition"],
     )
     app.prepare(ctx_id=ctx_id, det_size=(640, 640))
-    recognizer = app.models["recognition"]
-    detector = app.models["detection"]
 
     embeddings = []
     for entry in known_list:
@@ -58,12 +59,12 @@ def embed_faces(
         # Load image
         img = cv2.imread(image_path)
         if img is None:
-            logging.warning(f"Could not read image {image_path}. Skipping.")
+            logger.warning(f"Could not read image {image_path}. Skipping.")
             continue
 
         faces = app.get(img)
         if not faces:
-            logging.warning(f"No faces detected in image {image_path}. Skipping.")
+            logger.warning(f"No faces detected in image {image_path}. Skipping.")
             continue
 
         embedding = faces[0].embedding
@@ -71,4 +72,4 @@ def embed_faces(
     # Save embeddings to JSON
     with open(output_embeddings_json, "w") as f:
         json.dump(embeddings, f, indent=4)
-    logging.info(f"Embeddings saved to {output_embeddings_json}")
+    logger.info(f"Embeddings saved to {output_embeddings_json}")

@@ -2,6 +2,8 @@ import logging
 import tempfile
 import os
 import uuid
+from typing import Literal
+import argparse
 
 from dotenv import load_dotenv, find_dotenv
 from tqdm import tqdm
@@ -9,31 +11,50 @@ import whisper
 import torch
 
 from tools.audio_analysis.diarization import diarize
-from tools.download_video import VideoManager
-from tools.recognize_faces import recognize_faces
-from tools.extract_audio import extract_audio
+from captionalchemy.tools.media_utils.download_video import VideoManager
+from captionalchemy.tools.cv.recognize_faces import recognize_faces
+from captionalchemy.tools.media_utils.extract_audio import extract_audio
 from tools.captioning.transcriber import Transcriber
 from tools.captioning.timing_analyzer import TimingAnalyzer
-from tools.embed_known_faces import embed_faces
-from tools.captioning.writers.srt_caption_writer import SRTCaptionWriter
+from captionalchemy.tools.cv.embed_known_faces import embed_faces
+from captionalchemy.tools.captioning.writers.srt_writer import SRTCaptionWriter
+from captionalchemy.tools.captioning.writers.vtt_writer import VTTCaptionWriter
+from captionalchemy.tools.captioning.writers.sami_writer import SAMICaptionWriter
 from tools.audio_analysis.vad import get_speech_segments
 from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
 from tools.audio_analysis.audio_segment_integration import (
     integrate_audio_segments,
 )
 
+logger = logging.getLogger(__name__)
 
-def main(
+
+def run_pipeline(
     video_url_or_path: str,
     character_identification: bool = True,
     known_faces_json: str = "example/known_faces.json",
     embed_faces_json: str = "example/embed_faces.json",
+    caption_output_path: str = "output_captions",
+    caption_format: Literal["vtt", "srt", "smi"] = "srt",
 ):
-    """Main function to run the inference pipeline."""
+    """
+    Core pipeline that:
+    1. Embeds known faces (if enabled),
+    2. Downloads/extracts audio,
+    3. Runs VAD + diarization,
+    4. Runs Whisper transcription + face-based speaker ID,
+    5. Writes captions in the chosen format (SRT, VTT, SMI).
+    """
     logger.info("Embedding known faces...")
     embed_faces(known_faces_json, embed_faces_json)
     video_manager = VideoManager(use_file_buffer=False)
-    writer = SRTCaptionWriter()
+    if caption_format == "srt":
+        writer = SRTCaptionWriter()
+    elif caption_format == "vtt":
+        writer = VTTCaptionWriter()
+    elif caption_format == "smi":
+        writer = SAMICaptionWriter()
+
     transcriber = Transcriber()
     timing_analyzer = TimingAnalyzer()
 
@@ -72,10 +93,12 @@ def main(
             return
 
         # Diarize
-        # diarization_result = diarize(audio_path)  looks like this: { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., SPEAKER_XX: {} }
-        diarization_result = {
-            "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}
-        }
+        diarization_result = diarize(
+            audio_path
+        )  # { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., }
+        # diarization_result = {
+        #     "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}
+        # }
         logger.info("Completed diarization.")
         logger.debug(f"Diarization result: {diarization_result}")
 
@@ -87,9 +110,7 @@ def main(
             diarization_result,
             total_audio_duration=None,
         )
-
-        print("Integrated audio events:\n")
-        print(integrated_audio_events)
+        logger.debug(f"Integrated audio events: {integrated_audio_events}")
 
         # Run whisper and character identification on each individual speaker segment
         for audio_event in tqdm(
@@ -161,18 +182,88 @@ def main(
                 )
 
         # Write the captions to an SRT file
-        writer.write("output_captions.srt")
+        writer.write(f"{caption_output_path}.{caption_format}")
         logger.info("Captions written to output_captions.srt")
 
 
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    logger = logging.getLogger(__name__)
-
-    load_dotenv(find_dotenv(), override=True)
-
-    video_url = "mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
-    logger.info("Starting inference pipeline...")
-    main(
-        video_url,
+def _build_arg_parser() -> argparse.ArgumentParser:
+    """Constructs the CLI argument parser for captionalchemy."""
+    parser = argparse.ArgumentParser(
+        prog="captionalchemy",
+        description="Download/extract audio from a video,"
+        "run diarization + transcription, and output captions.",
     )
+
+    parser.add_argument(
+        "video",
+        help="URL or local path of the video to caption (e.g., 'myvideo.mp4' or 'https://...').",
+    )
+
+    parser.add_argument(
+        "-f",
+        "--format",
+        choices=["srt", "vtt", "smi"],
+        default="srt",
+        help="Caption output format (default: 'srt').",
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        default="output_captions",
+        help="Base path (without extension) for output captions. "
+        "Actual file will be written as `<output>.<format>` (default: 'output_captions').",
+    )
+
+    parser.add_argument(
+        "--no-face-id",
+        action="store_false",
+        dest="character_identification",
+        help="Disable character identification via face recognition.",
+    )
+
+    parser.add_argument(
+        "--known-faces-json",
+        default="example/known_faces.json",
+        help="Path to JSON file listing known faces to embed (default: 'example/known_faces.json').",
+    )
+
+    parser.add_argument(
+        "--embed-faces-json",
+        default="example/embed_faces.json",
+        help="JSON path to store face embeddings (default: 'example/embed_faces.json').",
+    )
+
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable debug logging output."
+    )
+
+    return parser
+
+
+def main():
+    load_dotenv(find_dotenv(), override=True)
+    parser = _build_arg_parser()
+    args = parser.parse_args()
+
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+    else:
+        logging.getLogger().setLevel(logging.INFO)
+
+    logger = logging.getLogger("captionalchemy")
+    logger.info("Starting captionalchemy pipeline...")
+    run_pipeline(
+        video_url_or_path=args.video,
+        character_identification=args.character_identification,
+        known_faces_json=args.known_faces_json,
+        embed_faces_json=args.embed_faces_json,
+        caption_output_path=args.output,
+        caption_format=args.format,
+    )
+    logger.info("Pipeline completed successfully.")
+    logger.info("Output captions can be found at: %s.%s", args.output, args.format)
+
+
+if __name__ == "__main__":
+    main()

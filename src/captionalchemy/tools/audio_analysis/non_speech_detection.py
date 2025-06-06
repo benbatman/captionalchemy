@@ -1,7 +1,7 @@
 from typing import List, Dict
 import logging
 
-from panns_inference import AudioTagging, labels, SoundEventDetection
+from panns_inference import labels, SoundEventDetection
 import librosa
 import numpy as np
 
@@ -26,6 +26,9 @@ def detect_non_speech_segments(
     sed = SoundEventDetection(checkpoint_path=None, device=device)
     framewise_output = sed.inference(audio)
     scores = framewise_output[0]
+    logger.debug(
+        f"Scores shape: {scores.shape}, Labels: {labels}, Sample rate: {sample_rate}"
+    )
 
     speech_index = labels.index("Speech")
     hop_sec = 320 / sample_rate

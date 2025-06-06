@@ -4,7 +4,7 @@ import os
 import logging
 from sys import platform
 import re
-from typing import List, Dict, Optional, Tuple
+from typing import List, Optional
 from dataclasses import dataclass
 
 from whisper import Whisper
@@ -154,7 +154,7 @@ class Transcriber:
         whisper_build_path: Optional[str] = None,
         whisper_model_path: Optional[str] = None,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        platform: str = platform.lower(),  # 'darwin' for macOS, 'linux' for Linux, 'windows' for Windows
+        platform: str = platform.lower(),  # 'darwin', 'linux', 'windows'
     ) -> List[WordTiming]:
         """
         Transcribe audio to text using OpenAI's Whisper model.
