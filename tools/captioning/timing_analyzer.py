@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 import re
 import json
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ class WordTiming:
     is_punctuation: bool = False
     is_sentence_ending: bool = False
     is_clause_ending: bool = False
+    is_subword: bool = False
 
     def __post_init__(self):
         if self.duration is None:
@@ -73,6 +75,8 @@ class TimingAnalyzer:
         min_gap: float = 0.1,  # Minimum gap between segments
         prefer_punctuation_breaks: bool = True,
         language_patterns: Optional[Dict] = None,
+        custom_dictionary: Optional[List[str]] = None,
+        lexicon_path: str = "words_dictionary.json",
     ):
         self.max_chars_per_line = max_chars_per_line
         self.max_lines = max_lines
@@ -82,6 +86,8 @@ class TimingAnalyzer:
         self.max_reading_speed_cps = max_reading_speed_cps
         self.min_gap = min_gap
         self.prefer_punctuation_breaks = prefer_punctuation_breaks
+        self.custom_dictionary = set(custom_dictionary) if custom_dictionary else set()
+        self.lexicon_path = lexicon_path
 
         self.sentence_endings = {".", "!", "?"}
         self.clause_endings = {",", ";", ":"}
@@ -101,7 +107,6 @@ class TimingAnalyzer:
             "{",
             "}",
             '"',
-            "'",
         }
 
         # Default language patterns (unchanged)
@@ -131,17 +136,18 @@ class TimingAnalyzer:
         )
         self.lexicon = self._load_lexicon()
 
-    def _load_lexicon(
-        self, lexicon_path: str = "words_dictionary.json"
-    ) -> Dict[str, bool]:
+    def _load_lexicon(self) -> Dict[str, bool]:
         """
         Loads a lexicon from a JSON file.
         The lexicon is a dictionary where keys are words and values are True.
         """
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        lexicon_path = os.path.join(current_dir, self.lexicon_path)
         try:
             with open(lexicon_path, "r", encoding="utf-8") as f:
                 lexicon = json.load(f)
-            return {word.lower(): True for word in lexicon}
+                lexicon_dict = {word.lower(): True for word in lexicon}
+            return lexicon_dict
         except FileNotFoundError:
             logger.warning(
                 f"Lexicon file {lexicon_path} not found. Using empty lexicon."
@@ -195,6 +201,7 @@ class TimingAnalyzer:
           1) Heuristics to propose merges (short tokens, char‐type continuity).
           2) Lexicon membership for confirmation.
         """
+        logger.info("Handling split words...")
         if not word_timings:
             return []
 
@@ -203,48 +210,60 @@ class TimingAnalyzer:
         n = len(word_timings)
 
         while i < n:
+
             # Always try to match the largest possible sequence (up to 4 tokens)
-            max_fragments = 4
+            max_fragments = 5
             best_merge_idx = i
             best_merge_word = None
 
-            # Build progressivly longer candidates: tokens[i:j+1]
+            # Build progressively longer candidates, tokens[i:j+1]
             prefix = ""
             for j in range(i, min(i + max_fragments, n)):
                 token = word_timings[j].word.strip()
-                if not token:
-                    break  # Skip empty tokens
-                prefix += token
-                prefix_lower = prefix.lower()
-
+                if token == "":
+                    i += 1
+                    continue  # Skip empty tokens
                 # Heuristic: skip if prefix starts or ends with punctuation
+                # All punctation are outputted as separate tokens from Whisper
                 if any(p in token for p in self.all_punctuation):
                     break
 
+                prefix += token
+                prefix_lower = prefix.lower()
+
                 # Lexicon check
-                if prefix_lower in self.lexicon:
+                if (
+                    prefix_lower in self.lexicon
+                    or prefix_lower in self.custom_dictionary
+                ):
                     best_merge_idx = j
                     best_merge_word = prefix
-                    # Merge if found in lexicon
-                    break
 
-            # If we found a multi-token merge from i to best_merge_idx
-            if best_merge_word and best_merge_word > i:
+            # Continue looking up to max_fragments tokens
+            if (
+                best_merge_word is not None
+                and best_merge_idx is not None
+                and best_merge_idx > i
+            ):
+                # We found at least one multi-token merge; use the longest (largest j).
                 merged_timing = WordTiming(
                     word=best_merge_word,
                     start=word_timings[i].start,
                     end=word_timings[best_merge_idx].end,
                 )
                 merged.append(merged_timing)
-                # Move i to the next token after the merged segment
+                logger.debug(
+                    f"Merged word: {best_merge_word!r} from tokens {i}..{best_merge_idx}"
+                )
                 i = best_merge_idx + 1
             else:
-                # No merge: keep single token
+                # No valid multi-token merge; emit the single token as-is.
                 merged.append(word_timings[i])
                 i += 1
+
         return merged
 
-    def preprocess_whisper_timing(
+    def _preprocess_whisper_timing(
         self, word_timings: List[WordTiming]
     ) -> List[WordTiming]:
         """
@@ -372,7 +391,7 @@ class TimingAnalyzer:
             return []
 
         # Preprocess word timings
-        word_timings = self.preprocess_whisper_timing(word_timings)
+        word_timings = self._preprocess_whisper_timing(word_timings)
 
         max_duration = max_duration or self.max_duration
         max_characters = max_characters or (self.max_chars_per_line * self.max_lines)
@@ -480,6 +499,7 @@ class TimingAnalyzer:
                 continue
 
             # If this stripped token is exactly punctuation (e.g. ".", ",", etc.)
+            # and we have a previous token, attach it to the last token
             if w in self.all_punctuation:
                 if tokens:
                     tokens[-1] = tokens[-1] + w
@@ -487,6 +507,12 @@ class TimingAnalyzer:
                     # If there's no previous token, just treat punctuation as its own token
                     tokens.append(w)
             else:
+                # If previous token is a sentence-ending punctuation, capitalize the next word
+                if tokens and tokens[-1] and tokens[-1][-1] in self.sentence_endings:
+                    w = w.capitalize()
+                # Check if previous token is a clause-ending punctuation, and lower case
+                elif tokens and tokens[-1] and tokens[-1][-1] in self.clause_endings:
+                    w = w.lower()
                 # Normal word: append to list
                 tokens.append(w)
 

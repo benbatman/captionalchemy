@@ -23,6 +23,7 @@ class WordTiming:
     is_punctuation: bool = False
     is_sentence_ending: bool = False
     is_clause_ending: bool = False
+    is_subword: bool = False
 
     def __post_init__(self):
         if self.duration is None:
@@ -44,8 +45,33 @@ class Transcriber:
     def __init__(self):
 
         self.timestamp_pattern = re.compile(
-            r"\[(\d{2}:\d{2}:\d{2}\.\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}\.\d{3})\]\s*(.+?)(?:\s*$|\s*\n)"
+            r"""
+        ^\[
+          (?P<start>\d{2}:\d{2}:\d{2}\.\d{3})
+          \s*-->\s*
+          (?P<end>\d{2}:\d{2}:\d{2}\.\d{3})
+        \]
+        (?P<raw_token>.*)      # capture the rest of the line, including any leading spaces
+        $""",
+            re.VERBOSE,
         )
+        self.punctuation_set = {
+            ".",
+            ",",
+            "!",
+            "?",
+            ";",
+            ":",
+            "-",
+            "—",
+            "...",
+            "'",
+            '"',
+            "(",
+            ")",
+            "[",
+            "]",
+        }
 
     def _parse_timestamps(self, timestamp_str: str) -> float:
         """
@@ -82,14 +108,16 @@ class Transcriber:
         Example input: "[00:00:00.040 --> 00:00:00.110]   If"
         Returns: WordTiming object with start=0.040, end=0.110, word="If"
         """
-        line = line.strip()
+        line = line.rstrip("\n")
 
         match = self.timestamp_pattern.match(line)
 
         if not match:
             raise ValueError(f"Invalid line format: {line}")
 
-        start_time_str, end_time_str, word = match.groups()
+        start_time_str = match.group("start")
+        end_time_str = match.group("end")
+        raw_token = match.group("raw_token")
 
         # Convert timestamp strings to seconds
         start_seconds = self._parse_timestamps(start_time_str)
@@ -99,16 +127,21 @@ class Transcriber:
 
         if end_seconds < start_seconds:
             raise ValueError("End time must be greater than start time.")
-        if not word:
-            raise ValueError("Word cannot be empty.")
+        if not raw_token:
+            raise ValueError("Raw token cannot be empty.")
 
-        word = word.strip()
+        n_leading_spaces = len(raw_token) - len(raw_token.lstrip(" "))
+        # Whisper outputs 3 space if whole word, 2 spaces if subword
+        is_subword = raw_token not in self.punctuation_set and n_leading_spaces == 2
+
+        token = raw_token.strip()
 
         return WordTiming(
-            word=word,
+            word=token,
             start=start_seconds,
             end=end_seconds,
             duration=end_seconds - start_seconds,
+            is_subword=is_subword,
         )
 
     def transcribe_audio(

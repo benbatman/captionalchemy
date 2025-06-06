@@ -15,7 +15,7 @@ from tools.extract_audio import extract_audio
 from tools.captioning.transcriber import Transcriber
 from tools.captioning.timing_analyzer import TimingAnalyzer
 from tools.embed_known_faces import embed_faces
-from tools.captioning.caption_formatter import SRTCaptionWriter
+from tools.captioning.writers.srt_caption_writer import SRTCaptionWriter
 from tools.audio_analysis.vad import get_speech_segments
 from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
 from tools.audio_analysis.audio_segment_integration import (
@@ -170,8 +170,8 @@ if __name__ == "__main__":
 
     load_dotenv(find_dotenv(), override=True)
 
-    # video_url = "https://ga.video.cdn.pbs.org/videos/pbs-space-time/f6d229fe-d0dd-4207-8032-691aeab2a467/2000057365/hd-16x9-mezzanine-1080p/mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
-    video_url = "mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
+    video_url = "https://ga.video.cdn.pbs.org/videos/pbs-space-time/f6d229fe-d0dd-4207-8032-691aeab2a467/2000057365/hd-16x9-mezzanine-1080p/mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
+    # video_url = "mfmt0hf5_spac_426_fordotorg-mp4-720p-3000k.mp4"
     logger.info("Starting inference pipeline...")
     main(
         video_url,

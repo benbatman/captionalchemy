@@ -12,11 +12,11 @@ If you have perfect knowledge of every single particle in the universe, can
 
 4
 00:00:07,414 --> 00:00:11,454
-you use the laws of physics to re wind all the way back to the Big
+you use the laws of physics tore wind all the wayback to the Big
 
 5
 00:00:11,554 --> 00:00:15,474
-Bang? Is the entire history of the universe perfectly know able
+Bang? Is the entire history of the universe perfectly knowable
 
 6
 00:00:15,359 --> 00:00:16,640
@@ -39,28 +39,28 @@ or has information somehow been lost along the way?
 The laws of physics are equations of motion. They
 
 11
-00:00:28,581 --> 00:00:32,731
-are mathematical rules that dictate how systems evolve in time.
+00:00:28,581 --> 00:00:33,181
+are mathematical rules that dictate how systems evolve intime. Newton's
 
 12
-00:00:32,831 --> 00:00:35,471
-Newton's equations for classical mechanics, Maxwell's
+00:00:33,281 --> 00:00:35,471
+equations for classical mechanics, Maxwell's
 
 13
 00:00:35,571 --> 00:00:37,291
-equations for electrom ag net ism, and
+equations for electromagnetism, and
 
 14
 00:00:37,391 --> 00:00:40,591
 the Sch rod inger equation for quantum mechanics. These
 
 15
-00:00:40,691 --> 00:00:44,651
-laws can be used to predict how the universe will evolve into the future
+00:00:40,691 --> 00:00:45,231
+laws can be used to predict how the universe will evolve into the future. They
 
 16
-00:00:44,751 --> 00:00:47,231
-. They are deter ministic. Perfect
+00:00:45,331 --> 00:00:47,231
+are deterministic. Perfect
 
 17
 00:00:47,331 --> 00:00:49,381
@@ -75,16 +75,16 @@ predicts how the system will change in the next instant, and
 the instant after that, add
 
 20
-00:00:54,241 --> 00:00:58,461
-inf init um. But determin ism in the forward time direction does
+00:00:54,241 --> 00:00:59,851
+infinitum. But determinism in the forward time direction does not guarantee
 
 21
-00:00:58,561 --> 00:01:02,541
-not guarantee that the same laws can perfectly predict the
+00:00:59,951 --> 00:01:03,321
+that the same laws can perfectly predict the past. And
 
 22
-00:01:02,641 --> 00:01:05,931
-past. And yet this sort of deter ministic symmetry, time
+00:01:03,421 --> 00:01:05,931
+yet this sort of deterministic symmetry, time
 
 23
 00:01:06,031 --> 00:01:07,751
@@ -92,7 +92,7 @@ reversal symmetry, is
 
 24
 00:01:07,851 --> 00:01:11,401
-essential for information itself to be conserv ed.
+essential for information itself tobe conserved.
 
 25
 00:01:11,547 --> 00:01:12,053
@@ -128,19 +128,19 @@ we discussed recently, we
 
 33
 00:01:31,983 --> 00:01:36,023
-can use Notice The orem to discover quantities that are conserv ed in a system by
+can use Notice Theorem to discover quantities that are conserved in a system by
 
 34
 00:01:36,123 --> 00:01:39,193
-looking at the symm et ries of the equations of motion.
+looking at the symmetries of the equations of motion.
 
 35
 00:01:39,790 --> 00:01:43,970
-For example, if the equations stay the same from one point in time to the next, then
+For example, if the equations stay the same from one point intime to the next, then
 
 36
 00:01:44,070 --> 00:01:45,260
-energy is conserv ed.
+energy is conserved.
 
 37
 00:01:45,612 --> 00:01:48,732
@@ -148,7 +148,7 @@ Notice theorem applies to smooth, continuous
 
 38
 00:01:48,832 --> 00:01:52,142
-symm et ries where we can transform the chosen coordinate, however
+symmetries where we can transform the chosen coordinate, however
 
 39
 00:01:52,242 --> 00:01:54,152
@@ -156,7 +156,7 @@ much we like without changing the system.
 
 40
 00:01:54,857 --> 00:01:59,337
-but there are also symm et ries under discrete transformations. They're
+but there are also symmetries under discrete transformations. They're
 
 41
 00:01:59,437 --> 00:02:01,307
@@ -172,7 +172,7 @@ by looking in a mirror or we could make time run backwards.
 
 44
 00:02:09,292 --> 00:02:10,972
-Sy mm etry in that last one, time
+Symmetry in that last one, time
 
 45
 00:02:11,072 --> 00:02:12,632
@@ -184,7 +184,7 @@ covered by notice theorem, but
 
 47
 00:02:14,462 --> 00:02:16,732
-it's still tied to a conservation law, the
+it's still tied toa conservation law, the
 
 48
 00:02:16,832 --> 00:02:19,342
@@ -192,7 +192,7 @@ conservation of information. We
 
 49
 00:02:19,442 --> 00:02:23,552
-say that a system is time reversal symm etric if its equations of motion allow
+say that a system is time reversal symmetric if its equations of motion allow
 
 50
 00:02:23,652 --> 00:02:27,652
@@ -204,7 +204,7 @@ the system at any later time. If
 
 52
 00:02:29,472 --> 00:02:33,542
-they allow us to re wind the clock and figure out a single unique
+they allow us tore wind the clock and figure out a single unique
 
 53
 00:02:33,642 --> 00:02:34,592
@@ -212,11 +212,11 @@ history,
 
 54
 00:02:34,369 --> 00:02:38,709
-The entire universe would be time reversal symm etric if knowing the exact
+The entire universe would betime reversal symmetric if knowing the exact
 
 55
 00:02:38,809 --> 00:02:43,309
-state of every particle in the universe at one point in time allowed us to calculate
+state of every particle in the universe atone point intime allowed us to calculate
 
 56
 00:02:43,409 --> 00:02:46,239
@@ -224,7 +224,7 @@ its exact past history at all times. That
 
 57
 00:02:46,339 --> 00:02:50,719
-would mean that the exact configuration of the universe at any point in time defines
+would mean that the exact configuration of the universe at any point intime defines
 
 58
 00:02:50,819 --> 00:02:52,769
@@ -235,16 +235,16 @@ the exact configuration at any other point.
 For one thing, this
 
 60
-00:02:54,647 --> 00:02:58,727
-time reversal symmetry means complete information about the configuration at all
+00:02:54,647 --> 00:02:59,697
+time reversal symmetry means complete information about the configuration at all prior times
 
 61
-00:02:58,827 --> 00:03:00,847
-prior times still exists, and
+00:02:59,797 --> 00:03:01,937
+still exists, and always will, even
 
 62
-00:03:00,947 --> 00:03:04,427
-always will, even if we can't practically access it.
+00:03:02,037 --> 00:03:04,427
+if we can't practically accessit.
 
 63
 00:03:04,969 --> 00:03:07,879
@@ -252,573 +252,549 @@ That's what I mean about conservation of information.
 
 64
 00:03:08,426 --> 00:03:11,436
-A related idea is causal determin ism, the
+A related idea is causal determinism, the
 
 65
-00:03:11,536 --> 00:03:15,616
-idea that perfectly knowing the current state perfectly predicts all future
+00:03:11,536 --> 00:03:16,486
+idea that perfectly knowing the current state perfectly predicts all future states. But
 
 66
-00:03:15,716 --> 00:03:19,796
-states. But this sort of future determin ism doesn't have to be time
+00:03:16,586 --> 00:03:21,376
+this sort of future determinism doesn't have tobe time reversal symmetric. It's
 
 67
-00:03:19,896 --> 00:03:21,376
-reversal symm etric. It's
+00:03:21,476 --> 00:03:26,246
+possible for the future tobe perfectly predictable by the laws of physics while the pastis not.
 
 68
-00:03:21,476 --> 00:03:25,386
-possible for the future to be perfectly predictable by the laws of physics while the
-
-69
-00:03:25,486 --> 00:03:26,436
-past is not.
-
-70
 00:03:26,750 --> 00:03:30,770
 For example, what if many different configurations of particles in the present could
 
-71
+69
 00:03:30,870 --> 00:03:34,100
-converge on a single configuration of particles in the future?
+converge ona single configuration of particles in the future?
 
-72
+70
 00:03:34,575 --> 00:03:37,925
 If a multitude of states can all evolve into the same state, then
 
-73
+71
 00:03:38,025 --> 00:03:41,825
-knowing the latter state isn't enough for us to figure out what past states led to it.
+knowing the latter state isn't enough for us to figure out what past states led toit.
 
-74
+72
 00:03:42,505 --> 00:03:43,535
 For example, imagine
 
-75
+73
 00:03:43,635 --> 00:03:44,955
 you have two states, A
 
-76
+74
 00:03:45,055 --> 00:03:49,205
-and B, and the laws of motion say that A becomes C and B
+and B, and the laws of motion say that A becomes Cand B
 
-77
+75
 00:03:49,305 --> 00:03:53,265
 becomes D. If we look at the later state and C states C
 
-78
+76
 00:03:53,365 --> 00:03:55,205
 , we know A came first, but
 
-79
+77
 00:03:55,305 --> 00:03:56,575
-if we see state D, we
+if we see stateD, we
 
-80
+78
 00:03:56,675 --> 00:03:58,695
 know B came first. But
 
-81
+79
 00:03:58,795 --> 00:04:01,375
 what if both A and B lead to state C?
 
-82
+80
 00:04:01,275 --> 00:04:01,832
 [SILENCE]
 
-83
+81
 00:04:01,952 --> 00:04:04,752
-that future direction is deter ministic. But
+that future direction is deterministic. But
 
-84
+82
 00:04:04,852 --> 00:04:06,502
 now, if we look at the final state, we
 
-85
+83
 00:04:06,602 --> 00:04:10,892
-see state c, but we don't know which of a or b led to it.
+see state c, but we don't know which of aor bled toit.
 
-86
+84
 00:04:10,992 --> 00:04:11,407
 The
 
-87
+85
 00:04:11,507 --> 00:04:13,752
 information about those past states would be lost.
 
-88
+86
 00:04:14,322 --> 00:04:14,942
 Okay, so
 
-89
+87
 00:04:15,042 --> 00:04:17,342
 it should be simple enough to erase information, right
 
-90
+88
 00:04:17,442 --> 00:04:21,432
 ? We just set things up so our laws of motion force two possible initial
 
-91
+89
 00:04:21,532 --> 00:04:24,772
 states into the same exact final state. Then
 
-92
+90
 00:04:24,872 --> 00:04:27,152
 we wouldn't know what the original state was, and
 
-93
+91
 00:04:27,252 --> 00:04:29,002
 information would be destroyed.
 
-94
+92
 00:04:29,583 --> 00:04:30,773
 Actually, quantum
 
-95
+93
 00:04:30,873 --> 00:04:32,803
 mechanics forbids this. It
 
-96
+94
 00:04:32,903 --> 00:04:38,023
 ensures conservation of information and time reversal symmetry because of an even more fundamental
 
-97
+95
 00:04:38,123 --> 00:04:40,883
 rule. The conservation of probability.
 
-98
+96
 00:04:40,898 --> 00:04:41,505
 [SILENCE]
 
-99
+97
 00:04:41,575 --> 00:04:42,515
 To get at this, let's
 
-100
+98
 00:04:42,615 --> 00:04:45,825
 think about the basic equation of motion of quantum mechanics. That's
 
-101
+99
 00:04:45,925 --> 00:04:47,795
 the Sch rod inger equation. The
 
-102
+100
 00:04:47,895 --> 00:04:51,855
 time- dependent Sch rod inger equation describes the time evolution of this
 
-103
+101
 00:04:51,955 --> 00:04:53,695
 thing called the wave function. The
 
-104
+102
 00:04:53,795 --> 00:04:57,735
 wave function of a system fully describes all of its properties, and
 
-105
+103
 00:04:57,835 --> 00:04:59,685
 in quantum mechanics, that
 
-106
+104
 00:04:59,785 --> 00:05:02,885
 means the probability distribution of all of its properties, which
 
-107
+105
 00:05:02,985 --> 00:05:05,505
 you can get by taking the square of the wave function.
 
-108
+106
 00:05:05,907 --> 00:05:06,447
 [SILENCE]
 
-109
+107
 00:05:06,567 --> 00:05:10,557
-For example, the wave function of a particle encaps ulates the probability
+For example, the wave function of a particle encapsulates the probability
 
-110
+108
 00:05:10,657 --> 00:05:14,597
 that will be found in this or that location if we were to try to measure
 
-111
+109
 00:05:14,697 --> 00:05:18,607
-its position. The Schr ö d inger equation perfectly predicts both
+its position. The Schr ö dinger equation perfectly predicts both
 
-112
+110
 00:05:18,707 --> 00:05:23,397
 the past and future evolution of a given wave function in any given environment
 
-113
+111
 00:05:23,497 --> 00:05:24,937
 , or in quantum speak, in
 
-114
+112
 00:05:25,037 --> 00:05:26,447
 any given potential.
 
-115
+113
 00:05:26,465 --> 00:05:27,465
 In that sense, it's
 
-116
+114
 00:05:27,565 --> 00:05:30,495
-deter ministic and time reversal symm etric, and
+deterministic and time reversal symmetric, and
 
-117
+115
 00:05:30,595 --> 00:05:32,065
-so conserv es information.
+so conserves information.
 
-118
+116
 00:05:32,485 --> 00:05:36,595
 in principle, a given wave function in a given potential could mean
 
-119
+117
 00:05:36,695 --> 00:05:40,125
 the wave function of an electron moving in an atom's electric field, or
 
-120
+118
 00:05:40,225 --> 00:05:44,535
-it could mean the wave function of the entire universe in its own imp ossibly
+it could mean the wave function of the entire universe in its own impossibly
 
-121
+119
 00:05:44,635 --> 00:05:46,645
 complex and changing potential.
 
-122
+120
 00:05:46,845 --> 00:05:47,487
 [SILENCE]
 
-123
+121
 00:05:47,567 --> 00:05:52,017
-So, the Sch rod inger equation guarantees time revers ibility and so the conservation
+So, the Sch rod inger equation guarantees time reversibility and so the conservation
 
-124
+122
 00:05:52,117 --> 00:05:53,237
 of information, as
 
-125
+123
 00:05:53,337 --> 00:05:57,337
 do the more advanced formulations of quantum mechanics like the Dir ac equation and quantum
 
-126
+124
 00:05:57,437 --> 00:05:58,387
 field theories.
 
+125
+00:05:58,506 --> 00:06:03,726
+that guarantee arises from areally fundamental foundational quality of these theories
+
+126
+00:06:03,826 --> 00:06:06,686
+. It comes from what we call unit arity. Remember
+
 127
-00:05:58,506 --> 00:06:02,526
-that guarantee arises from a really fundamental foundational quality
+00:06:06,786 --> 00:06:11,296
+that the wave function encapsulates the distribution of probabilities fora given property. By
 
 128
-00:06:02,626 --> 00:06:03,976
-of these theories. It
+00:06:11,396 --> 00:06:12,686
+definition, those
 
 129
-00:06:04,076 --> 00:06:06,686
-comes from what we call unit arity. Remember
-
-130
-00:06:06,786 --> 00:06:11,096
-that the wave function encaps ulates the distribution of probabilities for a given property
-
-131
-00:06:11,196 --> 00:06:12,686
-. By definition, those
-
-132
 00:06:12,786 --> 00:06:15,526
 probabilities should add up to one. That
 
-133
-00:06:15,626 --> 00:06:19,756
-just means there's a 100 % probability that any given property will have some
+130
+00:06:15,626 --> 00:06:20,686
+just means there's a 100 % probability that any given property will have some possible value
 
-134
-00:06:19,856 --> 00:06:21,106
-possible value, even
+131
+00:06:20,786 --> 00:06:22,426
+, even if that value is zero.
 
-135
-00:06:21,206 --> 00:06:22,426
-if that value is zero.
-
-136
+132
 00:06:23,102 --> 00:06:25,462
 In the case of particle position, probability
 
-137
+133
 00:06:25,562 --> 00:06:29,022
 of adding to one just means that the particle is definitely somewhere.
 
-138
+134
 00:06:29,761 --> 00:06:31,171
 And as time goes on, a
 
-139
+135
 00:06:31,271 --> 00:06:35,191
 particle's properties will continue to have possible values. The
 
-140
+136
 00:06:35,291 --> 00:06:37,691
 probability should continue to sum to 1.
 
-141
+137
 00:06:37,875 --> 00:06:38,500
 [SILENCE]
 
-142
+138
 00:06:38,590 --> 00:06:39,980
 If this is true, and
 
+139
+00:06:40,080 --> 00:06:44,920
+it must be, we say that the time evolution of the wave function is unitary
+
+140
+00:06:45,020 --> 00:06:49,010
+. And this unit arity is a foundational assumption in all formulations
+
+141
+00:06:49,110 --> 00:06:51,520
+of quantum mechanics and quantum field theories.
+
+142
+00:06:52,066 --> 00:06:56,656
+Uniter ity is anon- negotiable statement about how probability works, but
+
 143
-00:06:40,080 --> 00:06:44,360
-it must be, we say that the time evolution of the wave function is unit
+00:06:56,756 --> 00:07:01,086
+the condition also ensures time reversal symmetry and conservation of information.
 
 144
-00:06:44,460 --> 00:06:48,380
-ary. And this unit arity is a foundational assumption in all
-
-145
-00:06:48,480 --> 00:06:51,520
-formulations of quantum mechanics and quantum field theories.
-
-146
-00:06:52,066 --> 00:06:56,396
-Un iter ity is a non- neg ot iable statement about how probability works
-
-147
-00:06:56,496 --> 00:07:01,026
-, but the condition also ensures time reversal symmetry and conservation of information
-
-148
-00:07:01,126 --> 00:07:02,076
-.
-
-149
 00:07:01,600 --> 00:07:05,340
 It's not straightforward to explain without getting into some hairy math, but
 
-150
+145
 00:07:05,440 --> 00:07:09,790
-the up shot is that quantum states must remain independent of each other
+the upshot is that quantum states must remain independent of each other
 
-151
+146
 00:07:09,890 --> 00:07:12,380
 in order to preserve probability. Two
 
-152
+147
 00:07:12,480 --> 00:07:16,610
 independent quantum states can't evolve into the exact same quantum
 
-153
+148
 00:07:16,710 --> 00:07:20,190
 state. If they did then the probabilities for the initial states, or
 
-154
+149
 00:07:20,290 --> 00:07:22,940
 for the final state can't both sum to one.
 
-155
+150
 00:07:23,855 --> 00:07:25,725
 Back to our first example, quantum
 
-156
+151
 00:07:25,825 --> 00:07:29,225
 states A and B can't both become quantum states C. The
 
-157
+152
 00:07:29,325 --> 00:07:33,645
 sum of the probabilities prior to the merger would not equal the sum of the probabilities
 
-158
+153
 00:07:33,745 --> 00:07:37,595
 after the merger and unit arity would be broken. The
 
-159
+154
 00:07:37,695 --> 00:07:42,085
 only type of evolution that preserves probability and unit arity is the evolution
 
-160
+155
 00:07:42,185 --> 00:07:45,365
 that also preserves the number of quantum states. And
 
-161
+156
 00:07:45,465 --> 00:07:49,495
 the preservation of quantum states means preservation of information because you
 
+157
+00:07:49,595 --> 00:07:53,905
+can trace a quantum state indefinitely forwards and backwards intime
+
+158
+00:07:54,005 --> 00:07:58,025
+. But all of this talk of quantum mechanics being deterministic seems abit at
+
+159
+00:07:58,125 --> 00:08:02,165
+odds with the idea of quantum randomness and the uncertainty principle. After
+
+160
+00:08:02,265 --> 00:08:06,425
+all, doesn't the act of measurement pick a single value of some quantity from
+
+161
+00:08:06,525 --> 00:08:08,535
+the range of possible values? That
+
 162
-00:07:49,595 --> 00:07:53,545
-can trace a quantum state indefinitely forwards and backwards in
+00:08:08,635 --> 00:08:12,605
+value seems tobe chosen randomly based on the probability distribution
 
 163
-00:07:53,645 --> 00:07:57,625
-time. But all of this talk of quantum mechanics being deter ministic seems
-
-164
-00:07:57,725 --> 00:08:01,725
-a bit at odds with the idea of quantum random ness and the uncertainty principle
-
-165
-00:08:01,825 --> 00:08:02,835
-. After all, doesn't
-
-166
-00:08:02,935 --> 00:08:06,945
-the act of measurement pick a single value of some quantity from the range
-
-167
-00:08:07,045 --> 00:08:08,535
-of possible values? That
-
-168
-00:08:08,635 --> 00:08:12,605
-value seems to be chosen randomly based on the probability distribution
-
-169
 00:08:12,705 --> 00:08:14,565
 encoded in the wave function. And
 
-170
+164
 00:08:14,665 --> 00:08:18,755
-the precision of the know ability of that value is defined by the uncertainty
+the precision of the knowability of that value is defined by the uncertainty
 
-171
+165
 00:08:18,855 --> 00:08:21,895
 principle. It sure seems like information can be lost.
 
-172
+166
 00:08:22,385 --> 00:08:25,915
 but that's not really what we mean by quantum information. Quantum
 
-173
+167
 00:08:26,015 --> 00:08:29,945
 information refers to the full information content of the wave function
 
-174
+168
 00:08:30,045 --> 00:08:31,845
 , not just what we measure. And
 
-175
+169
 00:08:31,945 --> 00:08:33,005
 in principle, make
 
-176
+170
 00:08:33,105 --> 00:08:37,225
-enough measurements and you can extract all of the information from a wave function.
+enough measurements and you can extract all of the information from awave function.
 
-177
+171
 00:08:37,325 --> 00:08:37,825
 It's
 
-178
+172
 00:08:37,925 --> 00:08:41,705
 worth mentioning that the collapse of the wave function in the Copenhagen interpretation
 
-179
+173
 00:08:41,805 --> 00:08:45,985
 of quantum mechanics actually does mess with conservation of information
 
-180
+174
 00:08:46,085 --> 00:08:48,125
 . According to that interpretation, the
 
-181
+175
 00:08:48,225 --> 00:08:52,345
 active measurement actually alters the entire wave function, causing
 
-182
+176
 00:08:52,445 --> 00:08:56,655
 it to shrink down to the narrow range of possible values implied by the
 
-183
+177
 00:08:56,755 --> 00:08:58,475
 result of the measurement.
 
-184
+178
 00:08:58,754 --> 00:09:04,244
 but that measured wave function can't then be tracked backwards to recover the passed wave function
 
-185
+179
 00:09:04,344 --> 00:09:09,484
-. So this interpretation is neither deter ministic nor time reversal symm etric
+. Sothis interpretation is neither deterministic nor time reversal symmetric
 
-186
+180
 00:09:09,584 --> 00:09:10,534
 .
 
-187
+181
 00:09:10,005 --> 00:09:12,165
 Other interpretations of quantum mechanics, for
 
-188
+182
 00:09:12,265 --> 00:09:13,090
 example, Everett's
 
-189
+183
 00:09:13,190 --> 00:09:16,455
 many worlds or the de Bro gl ie- B ohm pilot wave theory, preserve
 
-190
+184
 00:09:16,555 --> 00:09:18,485
-this time revers ibility. In
+this time reversibility. In
 
-191
+185
 00:09:18,585 --> 00:09:20,065
 the case of many worlds, the
 
-192
+186
 00:09:20,165 --> 00:09:23,445
 entire wave function continues to exist even after measurement.
 
-193
+187
 00:09:23,900 --> 00:09:28,270
-That measurement itself is just a thing that happens in one part of the possibility space
+That measurement itself is just athing that happens inone part of the possibility space
 
-194
+188
 00:09:28,370 --> 00:09:31,160
 , no information is really lost. And
 
-195
+189
 00:09:31,260 --> 00:09:32,950
 in the case of pilot wave theory, the
 
-196
+190
 00:09:33,050 --> 00:09:37,340
 wave function contains hidden information that is carried with the final measured
 
-197
+191
 00:09:37,440 --> 00:09:38,390
 particle.
 
-198
+192
 00:09:37,881 --> 00:09:38,877
 [SILENCE]
 
-199
+193
 00:09:38,937 --> 00:09:43,427
-There is one situation where time revers ibility appears to be broken, regardless
+There is one situation where time reversibility appears tobe broken, regardless
 
-200
+194
 00:09:43,527 --> 00:09:46,457
 of your favourite interpretation of quantum mechanics. That's
 
-201
+195
 00:09:46,557 --> 00:09:50,417
 the case of black holes and Hawking radiation. Stephen
 
-202
+196
 00:09:50,517 --> 00:09:55,267
-Hawking's ep onymous radiation appears to destroy quantum information, leading
+Hawking's eponymous radiation appears to destroy quantum information, leading
 
-203
+197
 00:09:55,367 --> 00:09:58,587
 to the famous black hole information paradox. In
 
-204
+198
 00:09:58,687 --> 00:10:00,087
 an upcoming episode, we'll
 
-205
+199
 00:10:00,187 --> 00:10:05,427
 see where the quantum information really can be deleted from the otherwise perfect memory
 
-206
+200
 00:10:05,527 --> 00:10:06,477
-of spac etime.
+of spacetime.
 
