@@ -30,6 +30,8 @@ def embed_faces(
         dict: A dictionary with names as keys and their corresponding face embeddings as values.
     """
     logger = logging.getLogger(__name__)
+    if not known_faces_json:
+        raise ValueError("known_faces.json must be provided.")
     with open(known_faces_json, "r") as f:
         known_list = json.load(f)
 

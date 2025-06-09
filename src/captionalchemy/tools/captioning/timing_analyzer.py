@@ -588,7 +588,7 @@ class TimingAnalyzer:
         optimized = []
         for seg in segments:
             # Enforce minimum display time
-            if seg.duration < self.min_duration:
+            if seg.duration and seg.duration < self.min_duration:
                 seg.end = seg.start + self.min_duration
 
             if optimized:
