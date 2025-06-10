@@ -83,7 +83,7 @@ jobs:
           mypy src/
       - name: Run tests
         run: |
-          pytest --maxfail=1 --disable-warnings -q
+          pytest --cov=captionalchemy -v
 
   publish:
     needs: build_and_test

@@ -81,7 +81,7 @@ def mock_timing_analyzer():
 
 @pytest.fixture
 def mock_whisper_model():
-    """A fake Whisper model with a stubbed `.transcribe()`."""
+    """A fake Whisper model with a stubbed .transcribe()."""
     model = MagicMock()
     model.transcribe.return_value = {
         "text": "Hello world.",
@@ -141,6 +141,22 @@ def sample_audio_events():
     ]
 
 
+@pytest.fixture
+def sample_test_audio_file(temp_dir):
+    """Creates a test WAV file and returns the path."""
+    path = os.path.join(temp_dir, "test_audio.wav")
+    create_test_audio_file(path)
+    return path
+
+
+@pytest.fixture
+def sample_test_video_file(temp_dir):
+    """Creates a test MP4 file and returns the path."""
+    path = os.path.join(temp_dir, "test_video.mp4")
+    create_test_video_file(path)
+    return path
+
+
 def create_test_audio_file(path: str, duration: float = 2.0):
     """Helper to write a tiny WAV sine wave file."""
     sr = 16000
@@ -161,3 +177,66 @@ def create_test_video_file(path: str):
     out = cv2.VideoWriter(path, fourcc, 24.0, (640, 480))
     out.write(frame)
     out.release()
+
+
+# Additional fixtures for pytest conversion
+
+
+@pytest.fixture
+def mock_speech_segments():
+    """Mock speech segments for testing."""
+    return [
+        {"start": 0.0, "end": 5.0, "duration": 5.0},
+        {"start": 10.0, "end": 15.0, "duration": 5.0},
+        {"start": 20.0, "end": 25.0, "duration": 5.0},
+    ]
+
+
+@pytest.fixture
+def mock_diarization_result():
+    """Mock diarization result."""
+    return {
+        "SPEAKER_00": {"start": 0.0, "end": 15.0},
+        "SPEAKER_01": {"start": 10.0, "end": 25.0},
+    }
+
+
+@pytest.fixture
+def mock_face_recognition_results():
+    """Mock face recognition results."""
+    return [
+        {
+            "timestamp": 0.0,
+            "bbox": [100, 100, 200, 200],
+            "face_id": "face_1",
+            "name": "John Doe",
+        },
+        {
+            "timestamp": 10.0,
+            "bbox": [150, 150, 250, 250],
+            "face_id": "face_2",
+            "name": "Jane Smith",
+        },
+    ]
+
+
+@pytest.fixture
+def mock_non_speech_events():
+    """Mock non-speech audio events."""
+    return [
+        {
+            "start": 5.5,
+            "end": 8.0,
+            "label": "music",
+            "confidence": 0.9,
+            "duration": 2.5,
+        }
+    ]
+
+
+# Pytest configuration for better test output
+def pytest_configure(config):
+    """Configure pytest with custom settings."""
+    # Add custom markers if needed
+    config.addinivalue_line("markers", "integration: mark test as integration test")
+    config.addinivalue_line("markers", "slow: mark test as slow running")
