@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
 
 env:
-  PYTORCH_VERSION: "2.7.0"
+  PYTORCH_VERSION: "2.7"
 
 jobs:
   build_and_test:
@@ -49,14 +49,14 @@ jobs:
           sudo apt-get install -y ffmpeg libsm6 libxext6 libfontconfig1 libxrender1
           # Install audio libraries for pydub
           sudo apt-get install -y libavcodec-extra
-          pip install torch==${{ env.PYTORCH_VERSION }} torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
           brew update 
           brew install ffmpeg
-          pip3 install torch==${{ env.PYTORCH_VERSION }} torchvision torchaudio
+          pip3 install torch torchvision torchaudio
 
       - name: Install dependencies (Windows)
         if: runner.os == 'Windows'
@@ -65,7 +65,7 @@ jobs:
           choco install -y ffmpeg
           # Add ffmpeg to PATH 
           echo "C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\bin" >> $GITHUB_PATH
-          pip3 install torch==${{ env.PYTORCH_VERSION }} torchvision torchaudio
+          pip3 install torch torchvision torchaudio
 
       - name: Upgrade pip and dependencies
         run: |
