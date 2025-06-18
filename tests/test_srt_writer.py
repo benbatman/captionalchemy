@@ -1,6 +1,5 @@
 import tempfile
 import os
-import pytest
 
 from captionalchemy.tools.captioning.writers.srt_writer import SRTCaptionWriter
 

@@ -1,19 +1,15 @@
 import tempfile
 import os
-import json
-import uuid
 import pytest
-import argparse
-from unittest.mock import Mock, patch, MagicMock, call
-from typing import List, Dict, Any
+from unittest.mock import Mock, patch
 import numpy as np
 import shutil
 import logging
 
-from captionalchemy.tools.audio_analysis.audio_segment_integration import (
-    AudioEvent,
-    EventType,
-)
+# from captionalchemy.tools.audio_analysis.audio_segment_integration import (
+#     AudioEvent,
+#     EventType,
+# )
 
 from captionalchemy.caption import run_pipeline, _build_arg_parser, main
 

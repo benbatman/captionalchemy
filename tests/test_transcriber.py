@@ -1,10 +1,6 @@
 import tempfile
-import os
-import subprocess
 import pytest
 from unittest.mock import patch, Mock
-import numpy as np
-import torch
 
 from captionalchemy.tools.captioning.transcriber import Transcriber, WordTiming
 
