@@ -9,6 +9,13 @@ description = "A Python package to create closed captions with face detection an
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Ben Batman", email = "benbatman2@gmail.com" }]
+keywords = [
+    "caption",
+    "closed captions",
+    "face detection",
+    "face recognition",
+    "video processing",
+]
 
 dependencies = [
     "pyannote.audio==3.3.2",
@@ -25,13 +32,20 @@ dependencies = [
     "tqdm==4.67.1",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest==8.4.0", "mypy==1.16.0", "flake8==7.2.0", "black==25.1.0"]
+
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
-requires-python = ">=3.8"
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["captionalchemy*"]
+
+requires-python = [">=3.10"]
 
 [project.scripts]
 captionalchemy = "captionalchemy.caption:main"

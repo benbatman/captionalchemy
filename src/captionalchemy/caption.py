@@ -10,19 +10,21 @@ from tqdm import tqdm
 import whisper
 import torch
 
-from tools.audio_analysis.diarization import diarize
+from captionalchemy.tools.audio_analysis.diarization import diarize
 from captionalchemy.tools.media_utils.download_video import VideoManager
 from captionalchemy.tools.cv.recognize_faces import recognize_faces
 from captionalchemy.tools.media_utils.extract_audio import extract_audio
-from tools.captioning.transcriber import Transcriber
-from tools.captioning.timing_analyzer import TimingAnalyzer
+from captionalchemy.tools.captioning.transcriber import Transcriber
+from captionalchemy.tools.captioning.timing_analyzer import TimingAnalyzer
 from captionalchemy.tools.cv.embed_known_faces import embed_faces
 from captionalchemy.tools.captioning.writers.srt_writer import SRTCaptionWriter
 from captionalchemy.tools.captioning.writers.vtt_writer import VTTCaptionWriter
 from captionalchemy.tools.captioning.writers.sami_writer import SAMICaptionWriter
-from tools.audio_analysis.vad import get_speech_segments
-from tools.audio_analysis.non_speech_detection import detect_non_speech_segments
-from tools.audio_analysis.audio_segment_integration import (
+from captionalchemy.tools.audio_analysis.vad import get_speech_segments
+from captionalchemy.tools.audio_analysis.non_speech_detection import (
+    detect_non_speech_segments,
+)
+from captionalchemy.tools.audio_analysis.audio_segment_integration import (
     integrate_audio_segments,
 )
 
