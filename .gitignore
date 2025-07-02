@@ -4,8 +4,9 @@ __pycache__
 .mypy_cache
 
 *.env
-
+.env
 
 # Whisper 
 whisper.cpp
 /whisper.cpp
+
