@@ -98,7 +98,7 @@ jobs:
       id-token: write
     environment:
       name: pypi
-      url: https://pypi.org/p/captionalchemy
+      url: https://pypi.org/project/captionalchemy
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
