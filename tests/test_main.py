@@ -2,7 +2,6 @@ import tempfile
 import os
 import pytest
 from unittest.mock import Mock, patch
-import numpy as np
 import shutil
 import logging
 
@@ -773,7 +772,6 @@ class TestIntegration:
         """Test that temporary directories are properly cleaned up."""
 
         # Track created temp directories
-        original_temp_dir = tempfile.TemporaryDirectory
         temp_dirs_created = []
 
         class MockTempDir:
