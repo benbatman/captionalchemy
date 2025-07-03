@@ -65,6 +65,8 @@ jobs:
           choco install -y ffmpeg
           # Add ffmpeg to PATH 
           echo "C:\ProgramData\chocolatey\lib\ffmpeg\tools\ffmpeg\bin" >> $GITHUB_PATH
+          # Install wget
+          choco install -y wget
           pip3 install torch torchvision torchaudio
 
       - name: Upgrade pip and dependencies

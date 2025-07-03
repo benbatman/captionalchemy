@@ -3,6 +3,7 @@ venv
 __pycache__
 .mypy_cache
 captionalchemy.egg-info
+.pytest_cache
 
 *.env
 .env
