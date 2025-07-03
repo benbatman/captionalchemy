@@ -46,6 +46,14 @@ def run_pipeline(
     3. Runs VAD + diarization,
     4. Runs Whisper transcription + face-based speaker ID,
     5. Writes captions in the chosen format (SRT, VTT, SMI).
+
+    Args:
+        video_url_or_path: URL or local path of the video to caption.
+        character_identification: Enable/disable face-based speaker identification.
+        known_faces_json: Path to JSON file listing known faces to embed.
+        embed_faces_json: JSON path to store face embeddings.
+        caption_output_path: Base path (without extension) for output captions.
+        caption_format: Format for output captions (srt, vtt, smi).
     """
     logger.info("Embedding known faces...")
     embed_faces(known_faces_json, embed_faces_json)
@@ -98,9 +106,6 @@ def run_pipeline(
         diarization_result = diarize(
             audio_path
         )  # { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., }
-        # diarization_result = {
-        #     "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}
-        # }
         logger.info("Completed diarization.")
         logger.debug(f"Diarization result: {diarization_result}")
 
@@ -151,7 +156,7 @@ def run_pipeline(
                 # Map speaker ID to name
                 speaker_id_to_name[speaker_id] = speaker_name
             else:
-                speaker_name = speaker_id_to_name[speaker_id]
+                speaker_name = speaker_id_to_name.get(speaker_id, speaker_id)
 
             # Add speaker name to the audio event
             audio_event.speaker_name = speaker_name

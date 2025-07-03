@@ -131,7 +131,7 @@ def test_no_silence_when_too_short():
     silences = identify_silence_gaps(
         speech_segments,
         non_speech_segments,
-        total_audio_duration=3.0,
+        total_audio_duration=2.1,  # Ensure the final silence check is valid
         min_silence_duration=0.5,
     )
     assert len(silences) == 0

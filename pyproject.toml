@@ -32,20 +32,26 @@ dependencies = [
     "tqdm==4.67.1",
 ]
 
-[project.optional-dependencies]
-dev = ["pytest==8.4.0", "mypy==1.16.0", "flake8==7.2.0", "black==25.1.0"]
-
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
+requires-python = ">=3.10"
+
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.0", "mypy==1.16.0", "flake8==7.2.0", "black==25.1.0"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["captionalchemy*"]
 
-requires-python = [">=3.10"]
 
 [project.scripts]
 captionalchemy = "captionalchemy.caption:main"
+
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

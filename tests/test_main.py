@@ -144,19 +144,19 @@ def mock_integrated_events(mock_speech_segments):
 class TestRunPipeline:
     """Test cases for the main run_pipeline function."""
 
-    @patch("caption.SRTCaptionWriter")
-    @patch("caption.TimingAnalyzer")
-    @patch("caption.Transcriber")
-    @patch("caption.recognize_faces")
-    @patch("caption.integrate_audio_segments")
-    @patch("caption.detect_non_speech_segments")
-    @patch("caption.diarize")
-    @patch("caption.get_speech_segments")
-    @patch("caption.extract_audio")
-    @patch("caption.VideoManager")
-    @patch("caption.embed_faces")
-    @patch("caption.whisper.load_model")
-    @patch("caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.SRTCaptionWriter")
+    @patch("captionalchemy.caption.TimingAnalyzer")
+    @patch("captionalchemy.caption.Transcriber")
+    @patch("captionalchemy.caption.recognize_faces")
+    @patch("captionalchemy.caption.integrate_audio_segments")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.diarize")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.whisper.load_model")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
     def test_complete_pipeline_success(
         self,
         mock_cuda,
@@ -254,12 +254,13 @@ class TestRunPipeline:
         # Verify writer methods were called
         mock_srt_writer.write.assert_called_once_with("test_output.srt")
 
-    @patch("caption.embed_faces")
-    @patch("caption.VideoManager")
-    @patch("caption.extract_audio")
-    @patch("caption.get_speech_segments")
-    @patch("caption.torch.cuda.is_available")
-    @patch("caption.whisper.load_model")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.whisper.load_model")
     def test_pipeline_no_speech_segments(
         self,
         mock_whisper_load,
@@ -268,6 +269,7 @@ class TestRunPipeline:
         mock_extract_audio,
         mock_video_manager_class,
         mock_embed_faces,
+        mock_detect_non_speech,
         mock_video_data,
     ):
         """Test pipeline behavior when no speech segments are detected."""
@@ -284,6 +286,7 @@ class TestRunPipeline:
 
         # Return empty speech segments
         mock_vad.return_value = []
+        mock_detect_non_speech.return_value = []
 
         # This should complete without error, just log a warning
         run_pipeline(
@@ -295,13 +298,14 @@ class TestRunPipeline:
         mock_embed_faces.assert_called_once()
         mock_vad.assert_called_once()
 
-    @patch("caption.VTTCaptionWriter")
-    @patch("caption.embed_faces")
-    @patch("caption.VideoManager")
-    @patch("caption.extract_audio")
-    @patch("caption.get_speech_segments")
-    @patch("caption.torch.cuda.is_available")
-    @patch("caption.whisper.load_model")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.VTTCaptionWriter")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.whisper.load_model")
     def test_pipeline_vtt_format(
         self,
         mock_whisper_load,
@@ -311,6 +315,7 @@ class TestRunPipeline:
         mock_video_manager_class,
         mock_embed_faces,
         mock_vtt_writer_class,
+        mock_detect_non_speech,
         mock_video_data,
     ):
         """Test pipeline with VTT caption format."""
@@ -325,6 +330,7 @@ class TestRunPipeline:
 
         mock_extract_audio.return_value = None
         mock_vad.return_value = []  # No speech to simplify test
+        mock_detect_non_speech.return_value = []
 
         mock_vtt_writer = Mock()
         mock_vtt_writer_class.return_value = mock_vtt_writer
@@ -338,13 +344,14 @@ class TestRunPipeline:
         # Verify VTT writer was instantiated
         mock_vtt_writer_class.assert_called_once()
 
-    @patch("caption.SAMICaptionWriter")
-    @patch("caption.embed_faces")
-    @patch("caption.VideoManager")
-    @patch("caption.extract_audio")
-    @patch("caption.get_speech_segments")
-    @patch("caption.torch.cuda.is_available")
-    @patch("caption.whisper.load_model")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.SAMICaptionWriter")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.whisper.load_model")
     def test_pipeline_sami_format(
         self,
         mock_whisper_load,
@@ -354,6 +361,7 @@ class TestRunPipeline:
         mock_video_manager_class,
         mock_embed_faces,
         mock_sami_writer_class,
+        mock_detect_non_speech,
         mock_video_data,
     ):
         """Test pipeline with SAMI caption format."""
@@ -368,6 +376,7 @@ class TestRunPipeline:
 
         mock_extract_audio.return_value = None
         mock_vad.return_value = []
+        mock_detect_non_speech.return_value = []
 
         mock_sami_writer = Mock()
         mock_sami_writer_class.return_value = mock_sami_writer
@@ -387,14 +396,16 @@ class TestRunPipeline:
         video_file = tmp_path / "test_video.mp4"
         video_file.write_text("dummy video content")
 
-        with patch("caption.embed_faces"), patch(
-            "caption.VideoManager"
-        ) as mock_vm_class, patch("caption.extract_audio"), patch(
-            "caption.get_speech_segments", return_value=[]
+        with patch("captionalchemy.caption.embed_faces"), patch(
+            "captionalchemy.caption.VideoManager"
+        ) as mock_vm_class, patch("captionalchemy.caption.extract_audio"), patch(
+            "captionalchemy.caption.get_speech_segments", return_value=[]
         ), patch(
-            "caption.torch.cuda.is_available", return_value=False
+            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
         ), patch(
-            "caption.whisper.load_model"
+            "captionalchemy.caption.torch.cuda.is_available", return_value=False
+        ), patch(
+            "captionalchemy.caption.whisper.load_model"
         ):
 
             mock_vm = Mock()
@@ -408,18 +419,18 @@ class TestRunPipeline:
             # Should not call get_video_data since file exists
             mock_vm.get_video_data.assert_not_called()
 
-    @patch("caption.SRTCaptionWriter")
-    @patch("caption.TimingAnalyzer")
-    @patch("caption.Transcriber")
-    @patch("caption.integrate_audio_segments")
-    @patch("caption.detect_non_speech_segments")
-    @patch("caption.diarize")
-    @patch("caption.get_speech_segments")
-    @patch("caption.extract_audio")
-    @patch("caption.VideoManager")
-    @patch("caption.embed_faces")
-    @patch("caption.whisper.load_model")
-    @patch("caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.SRTCaptionWriter")
+    @patch("captionalchemy.caption.TimingAnalyzer")
+    @patch("captionalchemy.caption.Transcriber")
+    @patch("captionalchemy.caption.integrate_audio_segments")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.diarize")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.whisper.load_model")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
     def test_pipeline_character_identification_disabled(
         self,
         mock_cuda,
@@ -485,19 +496,19 @@ class TestRunPipeline:
         # Should process speech events even without face recognition
         assert mock_transcriber.transcribe_audio.call_count == len(speech_events)
 
-    @patch("caption.SRTCaptionWriter")
-    @patch("caption.TimingAnalyzer")
-    @patch("caption.Transcriber")
-    @patch("caption.recognize_faces")
-    @patch("caption.integrate_audio_segments")
-    @patch("caption.detect_non_speech_segments")
-    @patch("caption.diarize")
-    @patch("caption.get_speech_segments")
-    @patch("caption.extract_audio")
-    @patch("caption.VideoManager")
-    @patch("caption.embed_faces")
-    @patch("caption.whisper.load_model")
-    @patch("caption.torch.cuda.is_available")
+    @patch("captionalchemy.caption.SRTCaptionWriter")
+    @patch("captionalchemy.caption.TimingAnalyzer")
+    @patch("captionalchemy.caption.Transcriber")
+    @patch("captionalchemy.caption.recognize_faces")
+    @patch("captionalchemy.caption.integrate_audio_segments")
+    @patch("captionalchemy.caption.detect_non_speech_segments")
+    @patch("captionalchemy.caption.diarize")
+    @patch("captionalchemy.caption.get_speech_segments")
+    @patch("captionalchemy.caption.extract_audio")
+    @patch("captionalchemy.caption.VideoManager")
+    @patch("captionalchemy.caption.embed_faces")
+    @patch("captionalchemy.caption.whisper.load_model")
+    @patch("captionalchemy.caption.torch.cuda.is_available")
     def test_pipeline_speaker_name_mapping(
         self,
         mock_cuda,
@@ -645,9 +656,9 @@ class TestArgumentParser:
 class TestMainFunction:
     """Test cases for the main() function."""
 
-    @patch("caption.run_pipeline")
-    @patch("caption.logging.getLogger")
-    @patch("caption.load_dotenv")
+    @patch("captionalchemy.caption.run_pipeline")
+    @patch("captionalchemy.caption.logging.getLogger")
+    @patch("captionalchemy.caption.load_dotenv")
     def test_main_with_default_args(
         self, mock_load_dotenv, mock_get_logger, mock_run_pipeline
     ):
@@ -669,9 +680,9 @@ class TestMainFunction:
             caption_format="srt",
         )
 
-    @patch("caption.run_pipeline")
-    @patch("caption.logging.getLogger")
-    @patch("caption.load_dotenv")
+    @patch("captionalchemy.caption.run_pipeline")
+    @patch("captionalchemy.caption.logging.getLogger")
+    @patch("captionalchemy.caption.load_dotenv")
     def test_main_with_verbose_logging(
         self, mock_load_dotenv, mock_get_logger, mock_run_pipeline
     ):
@@ -681,7 +692,7 @@ class TestMainFunction:
         mock_get_logger.return_value = mock_logger
 
         with patch("sys.argv", ["captionalchemy", "video.mp4", "--verbose"]), patch(
-            "caption.logging.getLogger"
+            "captionalchemy.caption.logging.getLogger"
         ) as mock_root_logger:
 
             main()
@@ -689,9 +700,9 @@ class TestMainFunction:
             # Should set logging level to DEBUG
             mock_root_logger().setLevel.assert_called_with(logging.DEBUG)
 
-    @patch("caption.run_pipeline")
-    @patch("caption.logging.getLogger")
-    @patch("caption.load_dotenv")
+    @patch("captionalchemy.caption.run_pipeline")
+    @patch("captionalchemy.caption.logging.getLogger")
+    @patch("captionalchemy.caption.load_dotenv")
     def test_main_with_custom_args(
         self, mock_load_dotenv, mock_get_logger, mock_run_pipeline
     ):
@@ -726,16 +737,16 @@ class TestMainFunction:
             caption_format="vtt",
         )
 
-    @patch("caption.run_pipeline")
-    @patch("caption.logging.getLogger")
-    @patch("caption.load_dotenv")
+    @patch("captionalchemy.caption.run_pipeline")
+    @patch("captionalchemy.caption.logging.getLogger")
+    @patch("captionalchemy.caption.load_dotenv")
     def test_main_info_logging_default(
         self, mock_load_dotenv, mock_get_logger, mock_run_pipeline
     ):
         """Test that main sets INFO logging by default."""
 
         with patch("sys.argv", ["captionalchemy", "video.mp4"]), patch(
-            "caption.logging.getLogger"
+            "captionalchemy.caption.logging.getLogger"
         ) as mock_root_logger:
 
             main()
@@ -751,12 +762,16 @@ class TestIntegration:
     def test_pipeline_environment_variables(self):
         """Test that environment variables are properly used."""
 
-        with patch("caption.embed_faces"), patch("caption.VideoManager"), patch(
-            "caption.extract_audio"
-        ), patch("caption.get_speech_segments") as mock_vad, patch(
-            "caption.torch.cuda.is_available", return_value=False
+        with patch("captionalchemy.caption.embed_faces"), patch(
+            "captionalchemy.caption.VideoManager"
+        ), patch("captionalchemy.caption.extract_audio"), patch(
+            "captionalchemy.caption.get_speech_segments"
+        ) as mock_vad, patch(
+            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
         ), patch(
-            "caption.whisper.load_model"
+            "captionalchemy.caption.torch.cuda.is_available", return_value=False
+        ), patch(
+            "captionalchemy.caption.whisper.load_model"
         ):
 
             mock_vad.return_value = []
@@ -781,20 +796,24 @@ class TestIntegration:
                 temp_dirs_created.append(self.name)
 
             def __enter__(self):
-                return self
+                return self.name
 
             def __exit__(self, *args):
                 if os.path.exists(self.name):
                     shutil.rmtree(self.name)
 
         with patch("tempfile.TemporaryDirectory", MockTempDir), patch(
-            "caption.embed_faces"
-        ), patch("caption.VideoManager"), patch("caption.extract_audio"), patch(
-            "caption.get_speech_segments", return_value=[]
+            "captionalchemy.caption.embed_faces"
+        ), patch("captionalchemy.caption.VideoManager"), patch(
+            "captionalchemy.caption.extract_audio"
         ), patch(
-            "caption.torch.cuda.is_available", return_value=False
+            "captionalchemy.caption.get_speech_segments", return_value=[]
         ), patch(
-            "caption.whisper.load_model"
+            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
+        ), patch(
+            "captionalchemy.caption.torch.cuda.is_available", return_value=False
+        ), patch(
+            "captionalchemy.caption.whisper.load_model"
         ):
 
             run_pipeline("test_video.mp4")

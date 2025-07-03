@@ -203,7 +203,8 @@ class SAMICaptionWriter:
         Escape HTML entities and handle special characters for SAMI format.
         """
         # First escape basic HTML entities
-        escaped = html.escape(text)
+        # Single quotes get outputted to the numeric &#x27;, not the HTML decimal &#39;
+        escaped = html.escape(text, quote=False)
 
         # Replace other common characters that might cause issues
         escaped = escaped.replace('"', "&quot;")

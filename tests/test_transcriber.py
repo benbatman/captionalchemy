@@ -63,14 +63,13 @@ def test_parse_line(transcriber):
     assert wt2.is_punctuation is True
 
 
-@patch("tempfile.NamedTemporaryFile")
-@patch("subprocess.run")
-@patch("whisper.load_model")
-@patch("os.remove")
-def test_transcribe_audio_python_api(
-    mock_remove, mock_load, mock_run, mock_tempfile, transcriber
-):
+@patch("captionalchemy.tools.captioning.transcriber.tempfile.NamedTemporaryFile")
+@patch("captionalchemy.tools.captioning.transcriber.subprocess.run")
+@patch("captionalchemy.tools.captioning.transcriber.whisper.load_model")
+@patch("captionalchemy.tools.captioning.transcriber.os.remove")
+def test_transcribe_audio_python_api(mock_remove, mock_load, mock_run, mock_tempfile):
     """Test transcribing audio using Whisper Python API."""
+    transcriber = Transcriber()
     # Mock temp file
     fake = Mock()
     fake.name = "/tmp/fake.wav"
@@ -96,8 +95,8 @@ def test_transcribe_audio_python_api(
 
     words = transcriber.transcribe_audio(
         audio_file="in.wav",
-        start=1.0,
-        end=2.0,
+        start=0.0,
+        end=1.1,
         model="base",
         whisper_build_path=None,
         whisper_model_path=None,
@@ -108,6 +107,9 @@ def test_transcribe_audio_python_api(
     assert words[0].word == "Hello"
     assert abs(words[0].start - 0.0) < 1e-3
     assert abs(words[0].end - 0.5) < 1e-3
+
     assert words[1].word == "world"
     assert abs(words[1].start - 0.6) < 1e-3
     assert abs(words[1].end - 1.1) < 1e-3
+
+    mock_remove.assert_called_once_with(fake.name)

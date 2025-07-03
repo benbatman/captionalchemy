@@ -64,6 +64,9 @@ def assign_speakers_to_speech_segment(
         # Find which speaker's time range this segment falls into
         # Looking for the speaker whose range has the maximum overlap with this segment
         for speaker_id, time_range in diarization.items():
+            print(
+                f"Checking speaker {speaker_id} for segment {segment_start} - {segment_end}"
+            )
             speaker_start = time_range["start"]
             speaker_end = time_range["end"]
 
@@ -72,7 +75,7 @@ def assign_speakers_to_speech_segment(
             overlap_end = min(segment_end, speaker_end)
             overlap = max(0, overlap_end - overlap_start)
 
-            # If this egment is mostly within this speaker's range, assign it
+            # If this segment is mostly within this speaker's range, assign it
             segment_duration = segment_end - segment_start
             overlap_ratio = overlap / segment_duration if segment_duration > 0 else 0
 
