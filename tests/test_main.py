@@ -5,11 +5,6 @@ from unittest.mock import Mock, patch
 import shutil
 import logging
 
-# from captionalchemy.tools.audio_analysis.audio_segment_integration import (
-#     AudioEvent,
-#     EventType,
-# )
-
 from captionalchemy.caption import run_pipeline, _build_arg_parser, main
 
 
@@ -396,16 +391,14 @@ class TestRunPipeline:
         video_file = tmp_path / "test_video.mp4"
         video_file.write_text("dummy video content")
 
-        with patch("captionalchemy.caption.embed_faces"), patch(
-            "captionalchemy.caption.VideoManager"
-        ) as mock_vm_class, patch("captionalchemy.caption.extract_audio"), patch(
-            "captionalchemy.caption.get_speech_segments", return_value=[]
-        ), patch(
-            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
-        ), patch(
-            "captionalchemy.caption.torch.cuda.is_available", return_value=False
-        ), patch(
-            "captionalchemy.caption.whisper.load_model"
+        with (
+            patch("captionalchemy.caption.embed_faces"),
+            patch("captionalchemy.caption.VideoManager") as mock_vm_class,
+            patch("captionalchemy.caption.extract_audio"),
+            patch("captionalchemy.caption.get_speech_segments", return_value=[]),
+            patch("captionalchemy.caption.detect_non_speech_segments", return_value=[]),
+            patch("captionalchemy.caption.torch.cuda.is_available", return_value=False),
+            patch("captionalchemy.caption.whisper.load_model"),
         ):
 
             mock_vm = Mock()
@@ -691,9 +684,10 @@ class TestMainFunction:
         mock_logger = Mock()
         mock_get_logger.return_value = mock_logger
 
-        with patch("sys.argv", ["captionalchemy", "video.mp4", "--verbose"]), patch(
-            "captionalchemy.caption.logging.getLogger"
-        ) as mock_root_logger:
+        with (
+            patch("sys.argv", ["captionalchemy", "video.mp4", "--verbose"]),
+            patch("captionalchemy.caption.logging.getLogger") as mock_root_logger,
+        ):
 
             main()
 
@@ -745,9 +739,10 @@ class TestMainFunction:
     ):
         """Test that main sets INFO logging by default."""
 
-        with patch("sys.argv", ["captionalchemy", "video.mp4"]), patch(
-            "captionalchemy.caption.logging.getLogger"
-        ) as mock_root_logger:
+        with (
+            patch("sys.argv", ["captionalchemy", "video.mp4"]),
+            patch("captionalchemy.caption.logging.getLogger") as mock_root_logger,
+        ):
 
             main()
 
@@ -762,16 +757,14 @@ class TestIntegration:
     def test_pipeline_environment_variables(self):
         """Test that environment variables are properly used."""
 
-        with patch("captionalchemy.caption.embed_faces"), patch(
-            "captionalchemy.caption.VideoManager"
-        ), patch("captionalchemy.caption.extract_audio"), patch(
-            "captionalchemy.caption.get_speech_segments"
-        ) as mock_vad, patch(
-            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
-        ), patch(
-            "captionalchemy.caption.torch.cuda.is_available", return_value=False
-        ), patch(
-            "captionalchemy.caption.whisper.load_model"
+        with (
+            patch("captionalchemy.caption.embed_faces"),
+            patch("captionalchemy.caption.VideoManager"),
+            patch("captionalchemy.caption.extract_audio"),
+            patch("captionalchemy.caption.get_speech_segments") as mock_vad,
+            patch("captionalchemy.caption.detect_non_speech_segments", return_value=[]),
+            patch("captionalchemy.caption.torch.cuda.is_available", return_value=False),
+            patch("captionalchemy.caption.whisper.load_model"),
         ):
 
             mock_vad.return_value = []
@@ -802,18 +795,15 @@ class TestIntegration:
                 if os.path.exists(self.name):
                     shutil.rmtree(self.name)
 
-        with patch("tempfile.TemporaryDirectory", MockTempDir), patch(
-            "captionalchemy.caption.embed_faces"
-        ), patch("captionalchemy.caption.VideoManager"), patch(
-            "captionalchemy.caption.extract_audio"
-        ), patch(
-            "captionalchemy.caption.get_speech_segments", return_value=[]
-        ), patch(
-            "captionalchemy.caption.detect_non_speech_segments", return_value=[]
-        ), patch(
-            "captionalchemy.caption.torch.cuda.is_available", return_value=False
-        ), patch(
-            "captionalchemy.caption.whisper.load_model"
+        with (
+            patch("tempfile.TemporaryDirectory", MockTempDir),
+            patch("captionalchemy.caption.embed_faces"),
+            patch("captionalchemy.caption.VideoManager"),
+            patch("captionalchemy.caption.extract_audio"),
+            patch("captionalchemy.caption.get_speech_segments", return_value=[]),
+            patch("captionalchemy.caption.detect_non_speech_segments", return_value=[]),
+            patch("captionalchemy.caption.torch.cuda.is_available", return_value=False),
+            patch("captionalchemy.caption.whisper.load_model"),
         ):
 
             run_pipeline("test_video.mp4")
