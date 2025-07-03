@@ -11,7 +11,7 @@ class SRTCaptionWriter:
     def __init__(
         self,
         min_silence_duration: float = 1.0,
-        min_music_duration: float = 1.5,
+        min_music_duration: float = 1.0,
     ) -> None:
         self._captions: List[Dict] = []
         self.min_silence_duration = min_silence_duration

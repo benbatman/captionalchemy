@@ -4,7 +4,7 @@ import os
 import logging
 from sys import platform
 import re
-from typing import List, Dict, Optional, Tuple
+from typing import List, Optional
 from dataclasses import dataclass
 
 from whisper import Whisper
@@ -19,7 +19,7 @@ class WordTiming:
     word: str
     start: float
     end: float
-    duration: float = None
+    duration: Optional[float] = None
     is_punctuation: bool = False
     is_sentence_ending: bool = False
     is_clause_ending: bool = False
@@ -38,8 +38,18 @@ class WordTiming:
 
 class Transcriber:
     """
-    Subtitle segmentation that combines speaker identification
-    with optimal reading timing based on word-level timestamps.
+    Transcriber class for converting audio to text using OpenAI's Whisper model.
+    It supports both Whisper Python API and Whisper.cpp for macOS.
+    It can handle word-level timing and punctuation detection.
+    It parses lines in the format:
+    [HH:MM:SS.mmm --> HH:MM:SS.mmm]   word
+    where HH:MM:SS.mmm is the timestamp format.
+    It returns a list of WordTiming objects containing the word, start time, end time,
+    duration, and flags for punctuation and subwords.
+    It also handles subwords by checking the number of leading spaces in the raw token.
+    It uses ffmpeg to trim audio files to the specified start and end times.
+    It can run on different platforms (macOS, Linux, Windows) and uses the appropriate
+    method for transcription based on the platform and availability of Whisper.cpp.
     """
 
     def __init__(self):
@@ -82,6 +92,9 @@ class Transcriber:
         Returns:
             float: Total seconds represented by the timestamp.
         """
+        stripped_str = timestamp_str.strip()
+        if not stripped_str:
+            raise ValueError("Timestamp string cannot be empty.")
         try:
             time_parts = timestamp_str.split(":")
             hours = int(time_parts[0])
@@ -91,6 +104,17 @@ class Transcriber:
             seconds_parts = time_parts[2].split(".")
             seconds = int(seconds_parts[0])
             milliseconds = int(seconds_parts[1]) if len(seconds_parts) > 1 else 0
+
+            # Run sanity checks
+            if hours < 0 or minutes < 0 or seconds < 0 or milliseconds < 0:
+                raise ValueError("Negative values are not allowed in timestamps.")
+            if minutes >= 60 or seconds >= 60 or milliseconds >= 1000:
+                raise ValueError(
+                    "Invalid timestamp values: minutes must be < 60, "
+                    "seconds must be < 60, milliseconds must be < 1000."
+                )
+            if hours > 24:
+                raise ValueError("Hours must be less than or equal to 24.")
 
             # Calculate total seconds
             total_seconds = (
@@ -132,9 +156,8 @@ class Transcriber:
 
         n_leading_spaces = len(raw_token) - len(raw_token.lstrip(" "))
         # Whisper outputs 3 space if whole word, 2 spaces if subword
+        # Punctuations are taken care of separately
         is_subword = raw_token not in self.punctuation_set and n_leading_spaces == 2
-        if is_subword:
-            print("Subword detected:", raw_token)
         token = raw_token.strip()
 
         return WordTiming(
@@ -143,6 +166,9 @@ class Transcriber:
             end=end_seconds,
             duration=end_seconds - start_seconds,
             is_subword=is_subword,
+            is_punctuation=token in self.punctuation_set,
+            is_sentence_ending=token in {".", "!", "?"},
+            is_clause_ending=token in {",", ";", ":", "—"},
         )
 
     def transcribe_audio(
@@ -154,7 +180,7 @@ class Transcriber:
         whisper_build_path: Optional[str] = None,
         whisper_model_path: Optional[str] = None,
         device: str = "cuda" if torch.cuda.is_available() else "cpu",
-        platform: str = platform.lower(),  # 'darwin' for macOS, 'linux' for Linux, 'windows' for Windows
+        platform: str = platform.lower(),  # 'darwin', 'linux', 'windows'
     ) -> List[WordTiming]:
         """
         Transcribe audio to text using OpenAI's Whisper model.

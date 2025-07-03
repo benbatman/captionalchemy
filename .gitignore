@@ -1,10 +1,17 @@
 venv
 .venv
 __pycache__
+.mypy_cache
+captionalchemy.egg-info
+.pytest_cache
 
 *.env
-
+.env
 
 # Whisper 
 whisper.cpp
 /whisper.cpp
+
+# Coverage
+.coverage
+.coverage.*

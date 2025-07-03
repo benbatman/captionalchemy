@@ -1,5 +1,4 @@
-from typing import List, Dict, Any, Optional, Tuple
-import logging
+from typing import List, Dict, Optional
 from dataclasses import dataclass
 from enum import Enum
 
@@ -46,6 +45,13 @@ def assign_speakers_to_speech_segment(
     Returns:
         List[Dict]: Updated speech segments with assigned speaker IDs.
     """
+    if not diarization:
+        # If no diarization data, return segments as is
+        for segment in speech_segments:
+            segment["speaker_id"] = None
+            segment["duration"] = segment["end"] - segment["start"]
+        return speech_segments
+
     speech_segments_with_diarization = []
 
     for segment in speech_segments:
@@ -58,6 +64,9 @@ def assign_speakers_to_speech_segment(
         # Find which speaker's time range this segment falls into
         # Looking for the speaker whose range has the maximum overlap with this segment
         for speaker_id, time_range in diarization.items():
+            print(
+                f"Checking speaker {speaker_id} for segment {segment_start} - {segment_end}"
+            )
             speaker_start = time_range["start"]
             speaker_end = time_range["end"]
 
@@ -66,7 +75,7 @@ def assign_speakers_to_speech_segment(
             overlap_end = min(segment_end, speaker_end)
             overlap = max(0, overlap_end - overlap_start)
 
-            # If this egment is mostly within this speaker's range, assign it
+            # If this segment is mostly within this speaker's range, assign it
             segment_duration = segment_end - segment_start
             overlap_ratio = overlap / segment_duration if segment_duration > 0 else 0
 
@@ -92,9 +101,8 @@ def identify_silence_gaps(
     """
     Identify periods of silence (gaps between speech and non-speech events).
 
-    This function finds the "empty spaces" in your audio timeline - periods where
-    neither speech nor other sounds are detected. These gaps often represent
-    silence, background noise, or very quiet periods.
+    This function finds the "empty spaces" in the audio timeline - periods where
+    neither speech nor other sounds are detected.
 
     Args:
         speech_segments: List of speech segments

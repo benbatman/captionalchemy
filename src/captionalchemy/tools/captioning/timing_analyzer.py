@@ -14,7 +14,7 @@ class WordTiming:
     word: str
     start: float
     end: float
-    duration: float = None
+    duration: Optional[float] = None
     is_punctuation: bool = False
     is_sentence_ending: bool = False
     is_clause_ending: bool = False
@@ -169,7 +169,8 @@ class TimingAnalyzer:
             # If there is a next token, check if next token is a contraction/possessive suffix
             if i + 1 < n:
                 next_word = word_timings[i + 1]
-                # We treat any token whose .word matches eject (apostrophe + s/m/re/ve/ll/d/’t) as a suffix
+                # Any token whose .word matches eject
+                # (apostrophe + s/m/re/ve/ll/d/’t) as a suffix
                 if self.contraction_suffix_pattern.match(next_word.word):
                     merged_word = current.word + next_word.word
 
@@ -375,8 +376,8 @@ class TimingAnalyzer:
     def suggest_subtitle_segments(
         self,
         word_timings: List[WordTiming],
-        max_duration: float = None,
-        max_characters: int = None,
+        max_duration: Optional[float] = None,
+        max_characters_per_line: Optional[int] = None,
     ) -> List[SubtitleSegment]:
         """
         Groups words into subtitle segments based on timing/length.
@@ -388,7 +389,9 @@ class TimingAnalyzer:
         word_timings = self._preprocess_whisper_timing(word_timings)
 
         max_duration = max_duration or self.max_duration
-        max_characters = max_characters or (self.max_chars_per_line * self.max_lines)
+        max_characters = max_characters_per_line or (
+            self.max_chars_per_line * self.max_lines
+        )
 
         analysis = self.calculate_speaking_rate(word_timings)
         adaptive_max = analysis.get("recommended_max_segment_duration", max_duration)
@@ -479,7 +482,8 @@ class TimingAnalyzer:
         Does text reconstruction:
 
         - Strips each WordTiming.word.
-        - If it's pure punctuation (one of self.all_punctuation), attach it directly to the previous token.
+        - If it's pure punctuation (one of self.all_punctuation),
+            attach it directly to the previous token.
         - Otherwise, collect it as a normal word.
         - Finally, join with exactly one space and collapse any accidental extra whitespace.
         """
@@ -584,7 +588,7 @@ class TimingAnalyzer:
         optimized = []
         for seg in segments:
             # Enforce minimum display time
-            if seg.duration < self.min_duration:
+            if seg.duration and seg.duration < self.min_duration:
                 seg.end = seg.start + self.min_duration
 
             if optimized:
