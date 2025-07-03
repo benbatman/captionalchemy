@@ -194,7 +194,8 @@ class TestSAMICaptionWriter:
     def test_write_with_long_text(self, mock_makedirs, mock_file):
         """Test writing with long text that should be split into lines."""
         writer = SAMICaptionWriter()
-        long_text = "This is a very long text that should be split into multiple lines because it exceeds the character limit"
+        long_text = """This is a very long text that should be split into
+                    multiple lines because it exceeds the character limit"""
         writer.add_caption(start=1.0, end=3.0, text=long_text, event_type="speech")
 
         writer.write("test.smi")
