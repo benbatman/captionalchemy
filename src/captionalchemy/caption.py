@@ -2,7 +2,7 @@ import logging
 import tempfile
 import os
 import uuid
-from typing import Literal, Optional
+from typing import Literal
 import argparse
 
 from dotenv import load_dotenv, find_dotenv
