@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "captionalchemy"
 dynamic = ["version"]
 description = "A Python package to create closed captions with face detection and recognition."
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
 authors = [{ name = "Ben Batman", email = "benbatman2@gmail.com" }]
 keywords = [
@@ -52,7 +52,6 @@ dev = [
     "black==25.1.0",
     "pytest-cov==6.2.1",
     "setuptools-scm==8.3.1",
-
 ]
 cuda = ["onnxruntime-gpu==1.22.0"]
 
