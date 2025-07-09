@@ -2,7 +2,7 @@ import logging
 import tempfile
 import os
 import uuid
-from typing import Literal
+from typing import Literal, Optional
 import argparse
 
 from dotenv import load_dotenv, find_dotenv
@@ -34,8 +34,8 @@ logger = logging.getLogger(__name__)
 def run_pipeline(
     video_url_or_path: str,
     character_identification: bool = True,
-    known_faces_json: str = "example/known_faces.json",
-    embed_faces_json: str = "example/embed_faces.json",
+    known_faces_json: Optional[str] = None,
+    embed_faces_json: Optional[str] = None,
     caption_output_path: str = "output_captions",
     caption_format: Literal["vtt", "srt", "smi"] = "srt",
 ):
@@ -56,7 +56,8 @@ def run_pipeline(
         caption_format: Format for output captions (srt, vtt, smi).
     """
     logger.info("Embedding known faces...")
-    embed_faces(known_faces_json, embed_faces_json)
+    if character_identification:
+        embed_faces(known_faces_json, embed_faces_json)
     video_manager = VideoManager(use_file_buffer=False)
     if caption_format == "srt":
         writer = SRTCaptionWriter()
@@ -231,14 +232,14 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--known-faces-json",
-        default="example/known_faces.json",
-        help="Path to JSON file listing known faces to embed (default: 'example/known_faces.json').",
+        default=None,
+        help="Path to JSON file listing known faces to embed (default: 'known_faces.json').",
     )
 
     parser.add_argument(
         "--embed-faces-json",
-        default="example/embed_faces.json",
-        help="JSON path to store face embeddings (default: 'example/embed_faces.json').",
+        default="embed_faces.json",
+        help="JSON path to store face embeddings (default: 'embed_faces.json').",
     )
 
     parser.add_argument(

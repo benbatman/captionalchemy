@@ -14,7 +14,13 @@ A Python package for creating intelligent closed captions with face detection an
 ## Installation
 
 ```bash
-pip install -e .
+pip install captionalchemy
+```
+
+If you have a GPU and want to use hardware acceleration:
+
+```bash
+pip install captionalchemy[cuda]
 ```
 
 ### Prerequisites
@@ -23,6 +29,8 @@ pip install -e .
 - FFmpeg (for video/audio processing)
 - CUDA-capable GPU (optional, for acceleration)
 - Whisper.cpp capable (optional on MacOS)
+
+If using Whisper.cpp on MacOS, follow installation instructions [[here](https://github.com/ggml-org/whisper.cpp?tab=readme-ov-file#core-ml-support)]
 
 ## Quick Start
 
@@ -45,9 +53,28 @@ pip install -e .
    ```
 
 3. **Generate captions**:
-   ```bash
-   captionalchemy video.mp4 -f srt -o my_captions
-   ```
+
+```bash
+captionalchemy video.mp4 -f srt -o my_captions
+```
+
+or in a python script
+
+```python
+from dotenv import load_dotenv
+from captionalchemy import caption
+
+load_dotenv()
+
+caption.run_pipeline(
+    video_url_or_path="path/to/your/video.mp4",         # this can be a video URL or local file
+    character_identification=False,                      # True by default
+    known_faces_json="path/to/known_faces.json",
+    embed_faces_json="path/to/embed_faces.json",        # name of the output file
+    caption_output_path="my_captions/output",           # will write output to output.srt (or .vtt/.smi)
+    caption_format="srt"
+)
+```
 
 ## Usage
 
@@ -140,16 +167,13 @@ John Doe: Welcome to our presentation on quantum computing.
 Jane Smith: Thanks John. Let's start with the basics.
 ```
 
-## Development
+## Development and Contributing
 
 ### Setup Development Environment
 
 ```bash
 # Install in development mode
-pip install -e .
-
-# Install development dependencies
-pip install -r requirements-dev.txt
+pip install -e ".[dev]"
 ```
 
 ### Running Tests
@@ -164,8 +188,8 @@ pytest
 # Linting
 flake8
 
-# Type checking
-mypy src/
+# Code formatting
+black src/ tests/
 ```
 
 ## Requirements
@@ -205,3 +229,7 @@ MIT License - see LICENSE file for details.
 - Check the logs with `-v` flag for detailed error information
 - Ensure all dependencies are properly installed
 - Verify video file format compatibility
+
+```
+
+```
