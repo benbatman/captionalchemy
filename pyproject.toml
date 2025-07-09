@@ -1,12 +1,12 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=64", "wheel", "setuptools-scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "captionalchemy"
 dynamic = ["version"]
 description = "A Python package to create closed captions with face detection and recognition."
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = { text = "MIT" }
 authors = [{ name = "Ben Batman", email = "benbatman2@gmail.com" }]
 keywords = [
@@ -41,6 +41,8 @@ classifiers = [
 
 requires-python = ">=3.10"
 
+[tool.setuptools_scm]
+
 
 [project.optional-dependencies]
 dev = [
@@ -50,7 +52,6 @@ dev = [
     "black==25.1.0",
     "pytest-cov==6.2.1",
     "setuptools-scm==8.3.1",
-
 ]
 cuda = ["onnxruntime-gpu==1.22.0"]
 
