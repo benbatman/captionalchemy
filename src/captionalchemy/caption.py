@@ -34,8 +34,8 @@ logger = logging.getLogger(__name__)
 def run_pipeline(
     video_url_or_path: str,
     character_identification: bool = True,
-    known_faces_json: Optional[str] = None,
-    embed_faces_json: Optional[str] = None,
+    known_faces_json: str = "known_faces.json",
+    embed_faces_json: str = "embed_faces.json",
     caption_output_path: str = "output_captions",
     caption_format: Literal["vtt", "srt", "smi"] = "srt",
 ):
@@ -93,17 +93,16 @@ def run_pipeline(
         speech_segments = get_speech_segments(
             audio_path, os.getenv("HF_AUTH_TOKEN", ""), device
         )
-        logger.info(f"Speech segments detected: {speech_segments}")
 
         logger.info("Detecting non-speech segments...")
         non_speech_events = detect_non_speech_segments(audio_path, device=device)
-        print(non_speech_events)
 
         if not speech_segments:
             logger.warning("No speech segments detected. Exiting.")
             return
 
         # Diarize
+        logger.info("Running diarization...")
         diarization_result = diarize(
             audio_path
         )  # { "SPEAKER_00": {"start": 3.25409375, "end": 606.2990937500001}, ..., }
@@ -232,7 +231,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
 
     parser.add_argument(
         "--known-faces-json",
-        default=None,
+        default="known_faces.json",
         help="Path to JSON file listing known faces to embed (default: 'known_faces.json').",
     )
 
@@ -254,10 +253,10 @@ def main():
     parser = _build_arg_parser()
     args = parser.parse_args()
 
-    if args.verbose:
-        logging.getLogger().setLevel(logging.DEBUG)
-    else:
-        logging.getLogger().setLevel(logging.INFO)
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO,
+        format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+    )
 
     logger = logging.getLogger("captionalchemy")
     logger.info("Starting captionalchemy pipeline...")
