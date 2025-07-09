@@ -253,10 +253,15 @@ def main():
     parser = _build_arg_parser()
     args = parser.parse_args()
 
+    level = logging.DEBUG if args.verbose else logging.INFO
+
     logging.basicConfig(
-        level=logging.DEBUG if args.verbose else logging.INFO,
+        level=level,
         format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
     )
+
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
 
     logger = logging.getLogger("captionalchemy")
     logger.info("Starting captionalchemy pipeline...")

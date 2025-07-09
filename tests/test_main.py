@@ -289,8 +289,9 @@ class TestRunPipeline:
             character_identification=False,
         )
 
+        # Verify mock_embed_faces was not called
+        mock_embed_faces.assert_not_called()
         # Verify early functions were called
-        mock_embed_faces.assert_called_once()
         mock_vad.assert_called_once()
 
     @patch("captionalchemy.caption.detect_non_speech_segments")
@@ -483,8 +484,8 @@ class TestRunPipeline:
             character_identification=False,
         )
 
-        # embed_faces should still be called
-        mock_embed_faces.assert_called_once()
+        # embed_faces should not be called
+        mock_embed_faces.assert_not_called()
 
         # Should process speech events even without face recognition
         assert mock_transcriber.transcribe_audio.call_count == len(speech_events)
@@ -591,8 +592,8 @@ class TestArgumentParser:
         assert args.format == "srt"
         assert args.output == "output_captions"
         assert args.character_identification is True
-        assert args.known_faces_json == "example/known_faces.json"
-        assert args.embed_faces_json == "example/embed_faces.json"
+        assert args.known_faces_json == "known_faces.json"
+        assert args.embed_faces_json == "embed_faces.json"
         assert args.verbose is False
 
     def test_build_arg_parser_custom_values(self):
@@ -667,8 +668,8 @@ class TestMainFunction:
         mock_run_pipeline.assert_called_once_with(
             video_url_or_path="test_video.mp4",
             character_identification=True,
-            known_faces_json="example/known_faces.json",
-            embed_faces_json="example/embed_faces.json",
+            known_faces_json="known_faces.json",
+            embed_faces_json="embed_faces.json",
             caption_output_path="output_captions",
             caption_format="srt",
         )
