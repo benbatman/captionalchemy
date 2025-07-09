@@ -8,7 +8,7 @@ import torch
 
 
 def embed_faces(
-    known_faces_json: str, output_embeddings_json: str = "embedded_faces.json"
+    known_faces_json: str, output_embeddings_json: str = "embed_faces.json"
 ) -> None:
     """
     JSON should be structured as:

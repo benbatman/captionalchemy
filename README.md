@@ -27,10 +27,11 @@ pip install captionalchemy[cuda]
 
 - Python 3.10+
 - FFmpeg (for video/audio processing)
-- CUDA-capable GPU (optional, for acceleration)
+- CUDA-capable GPU (optional, for acceleration but is highly recommended for the diarization)
 - Whisper.cpp capable (optional on MacOS)
 
 If using Whisper.cpp on MacOS, follow installation instructions [[here](https://github.com/ggml-org/whisper.cpp?tab=readme-ov-file#core-ml-support)]
+Clone the whisper repo into your working directory.
 
 ## Quick Start
 
