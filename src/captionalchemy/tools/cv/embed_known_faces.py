@@ -8,7 +8,7 @@ import torch
 
 
 def embed_faces(
-    known_faces_json: str, output_embeddings_json: str = "embedded_faces.json"
+    known_faces_json: str, output_embeddings_json: str = "embed_faces.json"
 ) -> None:
     """
     JSON should be structured as:
@@ -32,8 +32,15 @@ def embed_faces(
     logger = logging.getLogger(__name__)
     if not known_faces_json:
         raise ValueError("known_faces.json must be provided.")
-    with open(known_faces_json, "r") as f:
-        known_list = json.load(f)
+    try:
+        with open(known_faces_json, "r") as f:
+            known_list = json.load(f)
+
+    except FileNotFoundError as e:
+        logger.error(f"Error loading known faces JSON: {e}")
+        raise FileNotFoundError(
+            f"Could not find the known faces JSON file: {known_faces_json}"
+        ) from e
 
     insightface.model_zoo.get_model
     provider = (

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "captionalchemy"
-version = "0.1.0"
+dynamic = ["version"]
 description = "A Python package to create closed captions with face detection and recognition."
 readme = "README.md"
 license = { text = "MIT" }
@@ -30,6 +30,7 @@ dependencies = [
     "panns-inference==0.1.1",
     "librosa==0.11.0",
     "tqdm==4.67.1",
+    "torch==2.7.0",
 ]
 
 classifiers = [
@@ -42,7 +43,16 @@ requires-python = ">=3.10"
 
 
 [project.optional-dependencies]
-dev = ["pytest==8.4.0", "mypy==1.16.0", "flake8==7.2.0", "black==25.1.0", "pytest-cov==6.2.1"]
+dev = [
+    "pytest==8.4.0",
+    "mypy==1.16.0",
+    "flake8==7.2.0",
+    "black==25.1.0",
+    "pytest-cov==6.2.1",
+    "setuptools-scm==8.3.1",
+
+]
+cuda = ["onnxruntime-gpu==1.22.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
